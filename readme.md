@@ -1,8 +1,8 @@
 ## Kelompok 7 RPL - SmarTer
 
 **Anggota:**
-- Adam Bintang Arafah Poernomo (XXX)
-- Aqshal Ilham Samudera (XXX)
+- Adam Bintang Arafah Poernomo (2206029273)
+- Aqshal Ilham Samudera (2206829995)
 - Nahl Syareza Rahidra (2206830340)
 
 ## Deskripsi Proyek
