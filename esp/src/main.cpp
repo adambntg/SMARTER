@@ -3,6 +3,7 @@
 #include <ESP32Servo.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <WiFi.h>
 
 #define LCDCOL 20
 #define LCDROW 4
@@ -16,6 +17,11 @@ TaskHandle_t xTaskRotateMeterHandle;
 TimerHandle_t xSimpleTimer;
 
 LiquidCrystal_I2C lcd(0x27, lcd_col, lcd_row);
+
+const char *SSID = "WIFI_SSID";
+const char *password = "WIFI_PASSWORD";
+
+const char *mqtt_broker = "MQTT_URL";
 
 Servo servo;
 
