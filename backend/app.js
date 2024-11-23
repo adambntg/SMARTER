@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, "../frontend/public"))); // Menyajikan file statis dari folder frontend
+app.use(express.static(path.join(__dirname, "../frontend"))); // Menyajikan file statis dari folder frontend
 
 // Login route using database
 app.post("/api/login", async (req, res) => {
@@ -48,7 +48,7 @@ app.get("/api/data", async (req, res) => {
 
 // Rute untuk mengembalikan halaman utama
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/public/index.html")); // Mengembalikan file index.html
+  res.sendFile(path.join(__dirname, "../frontend/index.html")); // Mengembalikan file index.html
 });
 
 // Start the server

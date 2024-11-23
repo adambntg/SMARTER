@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landing Page</title>
+    <style>
+      .logout-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      .logout-button:hover {
+        background-color: #d32f2f;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Admin Data</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+        </tr>
+      </thead>
+      <tbody id="dataTable"></tbody>
+    </table>
+
+    <!-- Tombol Logout -->
+    <button class="logout-button" id="logoutButton">Logout</button>
+
+    <script>
+      // Fungsi untuk mendapatkan data admin dari server
+      async function fetchAdminData() {
+        try {
+          const response = await fetch("/api/data");
+          const data = await response.json();
+
+          const tableBody = document.getElementById("dataTable");
+          data.forEach((admin) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${admin.id}</td><td>${admin.username}</td>`;
+            tableBody.appendChild(row);
+          });
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      // Fungsi untuk menangani logout
+      function handleLogout() {
+        // Arahkan pengguna kembali ke halaman login
+        window.location.href = "index.html";
+      }
+
+      // Tambahkan event listener ke tombol logout
+      document
+        .getElementById("logoutButton")
+        .addEventListener("click", handleLogout);
+
+      // Panggil fungsi untuk mendapatkan data saat halaman dimuat
+      window.onload = fetchAdminData;
+    </script>
+  </body>
+</html>
