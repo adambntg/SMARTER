@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 5000;
 const AUTH_TOKEN = "cLyVhq_I2lD617RdlxpZji_5LoHrbN6I";
 const VPIN = 1; // Example virtual pin
 
+const valueToSend = "Ichi, Ni, San, Shi, Go, ZENKAIII";
+
 axios
   .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${VPIN}`)
   .then((response) => {
@@ -20,6 +22,17 @@ axios
   .catch((error) => {
     console.error("Error reading data from Blynk:", error);
   });
+
+// axios
+//   .get(
+//     `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${VPIN}=${valueToSend}`
+//   )
+//   .then((response) => {
+//     console.log("Data sent successfully:", response.data);
+//   })
+//   .catch((error) => {
+//     console.error("Error sending data to Blynk:", error);
+//   });
 
 // Middleware
 app.use(cors());
