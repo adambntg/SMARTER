@@ -5,40 +5,24 @@
 
 #include <WiFi.h>
 #include <BlynkSimpleEsp32.h>
-#include <Arduino.h>
-#include <FreeRTOSConfig.h>
-#include <ESP32Servo.h>
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-
-#define LCDCOL 20
-#define LCDROW 4
-
-int lcd_col = 20;
-int lcd_row = 4;
+#include <main.h>
 
 const char *ssid = "Wokwi-GUEST";
 const char *password = "";
 
-TaskHandle_t xTaskRotateHandle;
+BaseType_t xTaskRotateMeter;
 TaskHandle_t xTaskRotateMeterHandle;
 
+BaseType_t xTaskLCDBar;
+
 TimerHandle_t xSimpleTimer;
-
-LiquidCrystal_I2C lcd(0x27, lcd_col, lcd_row);
-
-Servo servo;
 
 void vTaskRotateMeter(void *pvParameters);
 void vTaskLCDBar(void *pvParamters);
 
 void vTaskRotateMeter(void *pvParameters)
 {
-  int number = 10;
-
   char buff[255];
-
-  const TickType_t xDelay = 2000 / portTICK_PERIOD_MS;
 
   while (1)
   {
@@ -50,9 +34,11 @@ void vTaskRotateMeter(void *pvParameters)
 
     // Serial.println(anRe);
 
-    int rotation = anRe * 180 / 4096;
+    int rotation = anRe * 181 / 4096;
 
     servo.write(rotation);
+
+    Blynk.virtualWrite(V0, rotation);
 
     // Serial.println(rotation);
 
@@ -76,21 +62,19 @@ void vTaskLCDBar(void *pvParameters)
 
 void vSimpleTimerCallback(TimerHandle_t xTimer)
 {
-  configASSERT(xTimer);
-
   Serial.println("Simple timer done!");
   xTimerReset(xTimer, 0);
 }
 
-BLYNK_READ(V0)
+void setup_rtos()
 {
-  // int ni = param.asInt();
-  Serial.println("ZENKAII!!!");
-}
+  xTaskRotateMeter = xTaskCreate(vTaskRotateMeter, "Rotate Meter Task", 4096, NULL, 1, &xTaskRotateMeterHandle);
+  xTaskLCDBar = xTaskCreate(vTaskLCDBar, "Display LCD Bar Task", 2048, NULL, 0, NULL);
 
-BLYNK_WRITE(V0)
-{
-  Serial.println("MEIYO NO SHI DA!!!");
+  xSimpleTimer = xTimerCreate("Simple Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vSimpleTimerCallback);
+  xTimerStart(xSimpleTimer, 0);
+
+  vTaskDelete(NULL);
 }
 
 void setup()
@@ -101,41 +85,11 @@ void setup()
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
 
-  lcd.init();
-  lcd.backlight();
-
-  lcd.setCursor(0, 0);
-
-  int number = 100;
-
-  ESP32PWM::allocateTimer(0);
-  ESP32PWM::allocateTimer(1);
-  ESP32PWM::allocateTimer(2);
-  ESP32PWM::allocateTimer(3);
-  servo.setPeriodHertz(50);
-  servo.attach(23);
-
-  xTaskCreate(vTaskRotateMeter, "Rotate Meter Task", 2048, NULL, 1, &xTaskRotateMeterHandle);
-  xTaskCreate(vTaskLCDBar, "Display LCD Bar Task", 2048, NULL, 0, NULL);
-
-  xSimpleTimer = xTimerCreate("Simple Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vSimpleTimerCallback);
-
-  if (xSimpleTimer)
-  {
-    Serial.println("Timer is valid");
-  }
-  else
-  {
-    Serial.println("Timer is invalid!");
-  }
-
-  if (xTimerStart(xSimpleTimer, 0) != pdPASS)
-  {
-  }
+  setup_servo();
+  setup_lcd();
+  setup_rtos();
 
   // vTaskStartScheduler();
-
-  vTaskDelete(NULL);
 }
 
 void loop()

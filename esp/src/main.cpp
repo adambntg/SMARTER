@@ -17,6 +17,8 @@ BaseType_t xTaskLCDBar;
 
 TimerHandle_t xSimpleTimer;
 
+int MAX_ROT = 90;
+
 void vTaskRotateMeter(void *pvParameters);
 void vTaskLCDBar(void *pvParamters);
 
@@ -36,9 +38,11 @@ void vTaskRotateMeter(void *pvParameters)
 
     int rotation = anRe * 181 / 4096;
 
-    servo.write(rotation);
+    int filtered_rotation = rotation <= MAX_ROT ? rotation : MAX_ROT;
 
-    Blynk.virtualWrite(V0, rotation);
+    servo.write(filtered_rotation);
+
+    Blynk.virtualWrite(V0, filtered_rotation);
 
     // Serial.println(rotation);
 

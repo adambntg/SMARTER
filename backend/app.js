@@ -1,38 +1,16 @@
 const express = require("express");
+
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
-const pool = require("./db/db"); // Mengimport koneksi pool dari db.js
-const axios = require("axios");
+
+const pool = require("./model/pg_conf"); // Mengimport koneksi pool dari db.js
+const blynk = require("./model/blynk_conf");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Blynk LMAO
-const AUTH_TOKEN = "cLyVhq_I2lD617RdlxpZji_5LoHrbN6I";
-const VPIN = 1; // Example virtual pin
-
-const valueToSend = "Ichi, Ni, San, Shi, Go, ZENKAIII";
-
-axios
-  .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${VPIN}`)
-  .then((response) => {
-    console.log("Received data from virtual pin:", response.data);
-  })
-  .catch((error) => {
-    console.error("Error reading data from Blynk:", error);
-  });
-
-// axios
-//   .get(
-//     `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${VPIN}=${valueToSend}`
-//   )
-//   .then((response) => {
-//     console.log("Data sent successfully:", response.data);
-//   })
-//   .catch((error) => {
-//     console.error("Error sending data to Blynk:", error);
-//   });
+setInterval(blynk.blynkGet, 1000);
 
 // Middleware
 app.use(cors());
