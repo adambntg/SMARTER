@@ -4,24 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Landing Page</title>
-    <style>
-      .logout-button {
-        margin-top: 20px;
-        padding: 10px 20px;
-        background-color: #f44336;
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-      }
-      .logout-button:hover {
-        background-color: #d32f2f;
-      }
-    </style>
+    <link rel="stylesheet" href="css/style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <h1>Admin Data</h1>
-    <table border="1">
+    <table>
       <thead>
         <tr>
           <th>ID</th>
@@ -31,7 +22,6 @@
       <tbody id="dataTable"></tbody>
     </table>
 
-    <!-- Tombol Logout -->
     <button class="logout-button" id="logoutButton">Logout</button>
 
     <script>
@@ -54,7 +44,6 @@
 
       // Fungsi untuk menangani logout
       function handleLogout() {
-        // Arahkan pengguna kembali ke halaman login
         window.location.href = "index.html";
       }
 
