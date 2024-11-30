@@ -85,6 +85,7 @@ function App() {
         path="/main"
         element={
           <div className="min-h-screen bg-gray-100 p-8">
+            <p className="font-mono">TEST</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {/* Temperature */}
               <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
@@ -118,10 +119,10 @@ function App() {
 
               {/* Servo Rotation */}
               <div className="flex flex-col items-center bg-white p-4 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold mb-2">Rotasi Servo</h3>
+                <p className="text-lg font-sans mb-2">Rotasi Servo</p>
                 <CircularProgressbar
                   value={getVal}
-                  maxValue={100}
+                  maxValue={180}
                   text={`${getVal}`}
                   styles={{
                     path: { stroke: "rgb(100, 255, 100)" },

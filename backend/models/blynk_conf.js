@@ -3,7 +3,9 @@ const axios = require("axios");
 // Blynk LMAO
 const AUTH_TOKEN = "cLyVhq_I2lD617RdlxpZji_5LoHrbN6I";
 const GET_PIN = 0; // Example virtual pin
-const POST_PIN = 1;
+const POST_PIN = 2;
+
+const val = 135;
 
 const blynkGet = () => {
   axios
@@ -19,7 +21,7 @@ const blynkGet = () => {
 const blynkUpdate = () => {
   axios
     .get(
-      `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${POST_PIN}=${valueToSend}`
+      `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${POST_PIN}=${val}`
     )
     .then((response) => {
       console.log("Data sent successfully:", response.data);

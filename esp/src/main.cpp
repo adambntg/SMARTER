@@ -17,10 +17,17 @@ BaseType_t xTaskLCDBar;
 
 TimerHandle_t xSimpleTimer;
 
-int MAX_ROT = 90;
+int max_rot = 90;
 
 void vTaskRotateMeter(void *pvParameters);
 void vTaskLCDBar(void *pvParamters);
+
+BLYNK_WRITE(V2)
+{
+  max_rot = param.asInt();
+  Serial.print("Max rotation: ");
+  Serial.println(max_rot);
+}
 
 void vTaskRotateMeter(void *pvParameters)
 {
@@ -38,7 +45,7 @@ void vTaskRotateMeter(void *pvParameters)
 
     int rotation = anRe * 181 / 4096;
 
-    int filtered_rotation = rotation <= MAX_ROT ? rotation : MAX_ROT;
+    int filtered_rotation = rotation <= max_rot ? rotation : max_rot;
 
     servo.write(filtered_rotation);
 
