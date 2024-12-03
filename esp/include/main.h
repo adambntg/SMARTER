@@ -4,6 +4,16 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
+byte degreeSymbol[8] = {
+    0b00111,
+    0b00101,
+    0b00111,
+    0b00000,
+    0b00000,
+    0b00000,
+    0b00000,
+    0b00000};
+
 int lcd_col = 20;
 int lcd_row = 4;
 
@@ -25,4 +35,6 @@ void setup_lcd()
     lcd.init();
     lcd.backlight();
     lcd.setCursor(0, 0);
+    lcd.print("Uptime / Rotation:");
+    lcd.createChar(0, degreeSymbol);
 }
