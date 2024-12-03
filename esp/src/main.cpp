@@ -1,12 +1,11 @@
 #define BLYNK_PRINT Serial
-#define BLYNK_TEMPLATE_ID "TMPL6kYMQkaS0"
-#define BLYNK_TEMPLATE_NAME "Zenkai"
-#define BLYNK_AUTH_TOKEN "cLyVhq_I2lD617RdlxpZji_5LoHrbN6I"
 
 #define ROTATION_VPIN V0
 #define MAX_ROTATION_VPIN V2
 #define TOTAL_UPTIME_VPIN V3
+#define MAX_UPTIME_VPIN V4
 
+#include <zenkai.h>
 #include <WiFi.h>
 #include <BlynkSimpleEsp32.h>
 #include <main.h>
@@ -20,11 +19,10 @@ int total_uptime = 0;
 BaseType_t xTaskRotateMeter;
 TaskHandle_t xTaskRotateMeterHandle;
 
-BaseType_t xTaskLCDBar;
-
 TimerHandle_t xSimpleTimer;
 
-int max_rot = 90;
+int max_rotation = 90;
+int max_uptime = 5;
 int open_threshold = 10;
 
 void vTaskRotateMeter(void *pvParameters);
@@ -32,9 +30,9 @@ void vTaskLCDBar(void *pvParamters);
 
 BLYNK_WRITE(MAX_ROTATION_VPIN)
 {
-  max_rot = param.asInt();
+  max_rotation = param.asInt();
   Serial.print("Max rotation: ");
-  Serial.println(max_rot);
+  Serial.println(max_rotation);
 }
 
 void vTaskRotateMeter(void *pvParameters)
@@ -45,16 +43,17 @@ void vTaskRotateMeter(void *pvParameters)
 
   while (1)
   {
+    int final_uptime = millis();
+    int delta_uptime = (final_uptime - initial_uptime) / 1000;
+
     int anRe = analogRead(34);
 
     int rotation = anRe * 181 / 4096;
 
-    int filtered_rotation = rotation <= max_rot ? rotation : max_rot;
+    int filtered_rotation = rotation <= max_rotation ? rotation : max_rotation;
+    filtered_rotation *= delta_uptime > max_uptime ? 0 : 1;
 
-    int final_uptime = millis();
-    int delta_uptime = (final_uptime - initial_uptime) / 1000;
-
-    if (filtered_rotation < open_threshold)
+    if (rotation < open_threshold)
     {
       total_uptime += delta_uptime;
       if (delta_uptime > 0)
@@ -95,7 +94,6 @@ void setup_rtos()
 
 void setup()
 {
-  // put your setup code here, to run once:
   Serial.begin(115200);
   Serial.println("Blin");
 

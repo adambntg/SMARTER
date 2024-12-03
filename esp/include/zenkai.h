@@ -1,0 +1,3 @@
+#define BLYNK_TEMPLATE_ID "TMPL6kYMQkaS0"
+#define BLYNK_TEMPLATE_NAME "Zenkai"
+#define BLYNK_AUTH_TOKEN "cLyVhq_I2lD617RdlxpZji_5LoHrbN6I"
