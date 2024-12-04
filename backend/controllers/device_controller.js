@@ -88,4 +88,3 @@ exports.get_owned_device = async (req, res) => {
     });
   }
 };
-

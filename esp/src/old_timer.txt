@@ -14,17 +14,17 @@
 const char *ssid = "Wokwi-GUEST";
 const char *password = "";
 
-int uptime = 0;
+int initial_uptime = 0;
 int total_uptime = 0;
-int max_uptime = 5;
 
 BaseType_t xTaskRotateMeter;
 TaskHandle_t xTaskRotateMeterHandle;
 
-TimerHandle_t xUptimeTimer;
+TimerHandle_t xSimpleTimer;
 
 int max_rotation = 90;
-int rotation_threshold = 10;
+int max_uptime = 5;
+int open_threshold = 10;
 
 void vTaskRotateMeter(void *pvParameters);
 
@@ -39,54 +39,46 @@ void vTaskRotateMeter(void *pvParameters)
 {
   char buff[255];
 
+  initial_uptime = millis();
+
   while (1)
   {
+    int final_uptime = millis();
+    int delta_uptime = (final_uptime - initial_uptime) / 1000;
+
     int anRe = analogRead(34);
 
     int rotation = anRe * 181 / 4096;
 
     int filtered_rotation = rotation <= max_rotation ? rotation : max_rotation;
-    filtered_rotation *= uptime > max_uptime ? 0 : 1;
+    filtered_rotation *= delta_uptime > max_uptime ? 0 : 1;
 
-    if (rotation > max_uptime)
+    if (rotation < open_threshold)
     {
-      if (xTimerIsTimerActive(xUptimeTimer) == pdFALSE)
+      total_uptime += delta_uptime;
+      if (delta_uptime > 0)
       {
-        xTimerStart(xUptimeTimer, 0);
+        Serial.println(delta_uptime);
       }
-    }
-    else
-    {
-      if (xTimerIsTimerActive(xUptimeTimer) != pdFALSE)
-      {
-        uptime = 0;
-        Serial.println("Resetting timer!");
-        xTimerReset(xUptimeTimer, 0);
-        xTimerStop(xUptimeTimer, 0);
-      }
+      initial_uptime = final_uptime;
     }
 
     lcd.setCursor(0, 1);
 
-    sprintf(buff, "%ds / %dC   ", uptime, filtered_rotation);
+    sprintf(buff, "%ds / %dC   ", delta_uptime, filtered_rotation);
 
     lcd.print(buff);
 
     servo.write(filtered_rotation);
 
     Blynk.virtualWrite(ROTATION_VPIN, filtered_rotation);
-    Blynk.virtualWrite(UPTIME_VPIN, uptime);
     Blynk.virtualWrite(TOTAL_UPTIME_VPIN, total_uptime);
   }
 }
 
-void vUptimeTimerCallback(TimerHandle_t xTimer)
+void vSimpleTimerCallback(TimerHandle_t xTimer)
 {
-  char buff[255];
-  uptime += 1;
-  total_uptime += 1;
-  sprintf(buff, "Uptime: %d / Total Uptime: %d", uptime, total_uptime);
-  Serial.println(buff);
+  // Serial.println("Simple timer done!");
   xTimerReset(xTimer, 0);
 }
 
@@ -94,7 +86,8 @@ void setup_rtos()
 {
   xTaskRotateMeter = xTaskCreate(vTaskRotateMeter, "Rotate Meter Task", 4096, NULL, 1, &xTaskRotateMeterHandle);
 
-  xUptimeTimer = xTimerCreate("Uptime Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vUptimeTimerCallback);
+  xSimpleTimer = xTimerCreate("Simple Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vSimpleTimerCallback);
+  xTimerStart(xSimpleTimer, 0);
 
   vTaskDelete(NULL);
 }
@@ -102,7 +95,7 @@ void setup_rtos()
 void setup()
 {
   Serial.begin(115200);
-  Serial.println("Configuring device...");
+  Serial.println("Blin");
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
 
