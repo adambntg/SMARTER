@@ -1,7 +1,7 @@
 const pool = require("../models/pg_conf");
 
 pool.connect().then(() => {
-  console.log("Connected to backend database!");
+  console.log("Connected to backend database! (General)");
 });
 
 exports.login = async (req, res) => {

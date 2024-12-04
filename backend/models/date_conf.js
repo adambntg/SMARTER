@@ -20,8 +20,8 @@ exports.date_determine = () => {
   const format_date = date.toISOString().split("T")[0];
   now = format_date;
 
-  // console.log(now);
-  // console.log(next);
+  console.log(now);
+  console.log(next);
 
   if (now != next) {
     console.log("Date change detected!");
@@ -35,6 +35,24 @@ exports.date_determine = () => {
       })
       .catch((error) => {
         console.error("Error:", error);
+      });
+
+    const params = {
+      v0: 0,
+      v3: 0,
+      v5: 0,
+      v6: 0,
+    };
+
+    axios
+      .get(`http://blynk.cloud/external/api/batch/update?token=${AUTH_TOKEN}`, {
+        params,
+      })
+      .then((response) => {
+        console.log("Sent: ", response.data);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
       });
   } else {
     // console.log("No date change!");

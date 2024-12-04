@@ -7,6 +7,7 @@
 #define MAX_UPTIME_VPIN V4
 #define WATER_VOLUME_VPIN V1
 #define TOTAL_WATER_VOLUME_VPIN V6
+#define DATE_VPIN V7
 
 #include <incontinens.h>
 #include <WiFi.h>
@@ -168,6 +169,7 @@ void reset_hey_daddy()
   // Blynk.virtualWrite(MAX_UPTIME_VPIN, 0);
   Blynk.virtualWrite(WATER_VOLUME_VPIN, 0);
   Blynk.virtualWrite(TOTAL_WATER_VOLUME_VPIN, 0);
+  Blynk.virtualWrite(DATE_VPIN, "Alpha");
   Serial.println("Pins reset!");
 }
 
