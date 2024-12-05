@@ -137,3 +137,26 @@ exports.john = async (req, res) => {
     });
   }
 };
+
+exports.record_device = async (req, res) => {
+  const { auth_token } = req.body;
+  const date = new Date();
+  const format_date = date.toISOString().split("T")[0];
+
+  try {
+    const query = "SELECT * FROM history WHERE date=$1 AND auth_token=$2";
+    const data = [format_date, auth_token];
+
+    const response = await pool.query(query, data);
+
+    if (response.rowCount < 1) {
+      return res.status(401).json({
+        message: "Not exist!",
+      });
+    }
+
+    return res.status(200).json({ message: "Exist!", payload: response.rows });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

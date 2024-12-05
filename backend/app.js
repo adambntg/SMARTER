@@ -18,9 +18,9 @@ app.use(
 // app.use(express.static(path.join(__dirname, "../frontend"))); // Menyajikan file statis dari folder frontend
 
 // setInterval(date_test.date_determine, 1000);
-setInterval(made_in_heaven.run_this, 1000);
+// setInterval(made_in_heaven.run_this, 1000);
 
-app.use("/sohei", device_route);
+app.use("/smarter", device_route);
 
 // Start the server
 app.listen(PORT, () => {

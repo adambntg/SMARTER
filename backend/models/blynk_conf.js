@@ -11,11 +11,26 @@ exports.blynk_get_api = (AUTH_TOKEN, PIN) => {
   return axios
     .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${PIN}`)
     .then((response) => {
-      console.log("Received data from virtual pin:", response.data);
+      console.log("Received: ", response.data);
       return response.data;
     })
     .catch((error) => {
-      console.error("Error reading data from Blynk:", error);
+      console.error("Error: ", error);
+      throw error;
+    });
+};
+
+exports.blynk_update_api = (AUTH_TOKEN, PIN, VALUE) => {
+  return axios
+    .get(
+      `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${PIN}=${VALUE}`
+    )
+    .then((response) => {
+      console.log("Sent: ", VALUE);
+      return VALUE;
+    })
+    .catch((error) => {
+      console.error("Error: ", error);
       throw error;
     });
 };
@@ -32,16 +47,16 @@ exports.blynk_get_api = (AUTH_TOKEN, PIN) => {
 // };
 
 // const blynkUpdate = () => {
-//   axios
-//     .get(
-//       `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${POST_PIN}=${val}`
-//     )
-//     .then((response) => {
-//       console.log("Data sent successfully:", response.data);
-//     })
-//     .catch((error) => {
-//       console.error("Error sending data to Blynk:", error);
-//     });
+// axios
+//   .get(
+//     `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${POST_PIN}=${val}`
+//   )
+//   .then((response) => {
+//     console.log("Data sent successfully:", response.data);
+//   })
+//   .catch((error) => {
+//     console.error("Error sending data to Blynk:", error);
+//   });
 // };
 
 // module.exports = { blynkGet, blynkUpdate };
