@@ -151,6 +151,12 @@ void vTaskRotateMeter(void *pvParameters)
 
     lcd.print(buff);
 
+    lcd.setCursor(0, 2);
+
+    String in_cooldown = xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? "In cooldown...   " : "Zang zing ready!";
+
+    lcd.print(in_cooldown);
+
     servo.write(filtered_rotation);
 
     Blynk.virtualWrite(ROTATION_VPIN, filtered_rotation);
@@ -162,7 +168,6 @@ void vTaskRotateMeter(void *pvParameters)
 
 void vUptimeTimerCallback(TimerHandle_t xTimer)
 {
-  char buff[255];
   uptime += 1;
   total_uptime += 1;
 
@@ -171,8 +176,6 @@ void vUptimeTimerCallback(TimerHandle_t xTimer)
 
 void vWaterVolumeTimerCallback(TimerHandle_t xTimer)
 {
-  char buff[255];
-
   water_volume = filtered_rotation * water_volume_coeff;
   total_water_volume += water_volume;
 
@@ -181,6 +184,8 @@ void vWaterVolumeTimerCallback(TimerHandle_t xTimer)
 
 void vTimeoutTimerCallback(TimerHandle_t xTimer)
 {
+  Serial.println("Timeout done!");
+
   xTimerStop(xTimer, 0);
 }
 
