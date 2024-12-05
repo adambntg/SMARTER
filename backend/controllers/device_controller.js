@@ -118,27 +118,6 @@ exports.get_owned_device = async (req, res) => {
   }
 };
 
-exports.john = async (req, res) => {
-  // const { data } = req.query;
-
-  try {
-    const query = "INSERT INTO date_test VALUES ($1) RETURNING *;";
-    const date = new Date();
-    const data = [date];
-
-    const response = await pool.query(query, data);
-
-    return res.status(200).json({
-      message: "Yep all done!",
-      payload: response.rows,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
-  }
-};
-
 exports.get_device_record = async (req, res) => {
   const { auth_token } = req.query;
   const date = new Date();
@@ -169,7 +148,6 @@ exports.update_device_record = async (req, res) => {
   const { auth_token } = req.query;
   const date = new Date();
   const format_date = date.toISOString().split("T")[0];
-  // const auth_token = "8MBnO3o_LjzhXp1-48BHdH4eA4lUWCg2";
 
   const total_water_volume = await blynk.blynk_get_api(auth_token, 6);
   const total_uptime = await blynk.blynk_get_api(auth_token, 3);
@@ -207,18 +185,15 @@ exports.update_device_record = async (req, res) => {
 };
 
 exports.set_device_max = async (req, res) => {
-  const { auth_token, max_rot, max_up } = req.query;
+  const { auth_token, max_rot, max_up, max_wat_vol } = req.query;
 
   try {
     blynk.blynk_update_api(auth_token, 2, max_rot);
     blynk.blynk_update_api(auth_token, 4, max_up);
+    blynk.blynk_update_api(auth_token, 8, max_wat_vol);
 
     return res.status(201).json({ message: "I think it's working!" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
-};
-
-exports.say_hi = async (req, res) => {
-  console.log("Hi!");
 };

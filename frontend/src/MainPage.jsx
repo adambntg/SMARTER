@@ -1,0 +1,191 @@
+import React, { useState, useEffect } from "react";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import "./bak/MainPage.css";
+import logoSmartWater from "./assets/logoSmartWater.png";
+import axios from "axios";
+// import blynk from "./models/blynk_conf";
+
+function MainPage() {
+  const AUTH_TOKEN = "iccuJhsXcjRIX20sFM75onKmGgwY_R_P";
+  const [get_max_uptime, set_max_uptime] = useState(0);
+  const [get_uptime, set_uptime] = useState(0);
+  const [get_rotation, set_rotation] = useState(0);
+  const [get_total_uptime, set_total_uptime] = useState(0);
+  const [get_total_water_volume, set_total_water_volume] = useState(0.0);
+  const [get_max_rotation, set_max_rotation] = useState(0);
+  const [get_max_water_volume, set_max_water_volume] = useState(0);
+
+  const blynk_get_api = async (AUTH_TOKEN, PIN) => {
+    return axios
+      .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${PIN}`)
+      .then((response) => {
+        // console.log(`RECEIVED V${PIN}:`, response.data);
+        return response.data;
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+        throw error;
+      });
+  };
+
+  const blynk_update_api = async (AUTH_TOKEN, PIN, VALUE) => {
+    return axios
+      .get(
+        `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${PIN}=${VALUE}`
+      )
+      .then((response) => {
+        // console.log(`SENT V${PIN}: `, VALUE);
+        return VALUE;
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+        throw error;
+      });
+  };
+
+  useEffect(() => {
+    const renew = setInterval(async () => {
+      set_max_rotation(await blynk_get_api(AUTH_TOKEN, 2));
+      set_max_uptime(await blynk_get_api(AUTH_TOKEN, 4));
+      set_max_water_volume(await blynk_get_api(AUTH_TOKEN, 8));
+      set_rotation(await blynk_get_api(AUTH_TOKEN, 0));
+      set_uptime(await blynk_get_api(AUTH_TOKEN, 5));
+      set_total_water_volume(await blynk_get_api(AUTH_TOKEN, 6));
+      set_total_uptime(await blynk_get_api(AUTH_TOKEN, 3));
+    }, 1000);
+
+    return () => {
+      clearInterval(renew);
+    };
+  }, []);
+
+  return (
+    <div className="main-container font-sans">
+      <div className="dashboard-card">
+        {/* Logo */}
+        <div className="logo-container">
+          <img src={logoSmartWater} alt="SmartWater Logo" className="logo" />
+        </div>
+        <p className="main-title">Dashboard</p>
+
+        {/* Card Container */}
+        <div className="card-container">
+          {/* Total Uptime */}
+          <div className="card card-uptime">
+            <h3 className="card-title">Total Uptime</h3>
+            <p>{get_total_uptime}s</p>
+          </div>
+
+          {/* Total Water Volume */}
+          <div className="card card-water">
+            <h3 className="card-title">Total Water Volume</h3>
+            <p>{get_total_water_volume}L</p>
+          </div>
+
+          {/* Real-Time Uptime */}
+          <div className="card card-uptime-realtime">
+            <h3 className="card-title">Real-Time Uptime</h3>
+            <span className="uptime-timer">{get_uptime}s</span>
+          </div>
+
+          {/* Rotasi Servo */}
+          <div className="card card-rotation rotasi-servo-card">
+            <p className="card-title">Rotasi Servo</p>
+            <CircularProgressbar
+              value={get_rotation}
+              maxValue={180}
+              text={get_rotation}
+              // styles={{
+              //   path: {
+              //     stroke: "#00d1b2",
+              //     strokeLinecap: "round",
+              //     strokeWidth: 10,
+              //   },
+              //   text: {
+              //     fill: "#fff",
+              //     fontSize: "1.5rem",
+              //     fontWeight: "bold",
+              //   },
+              // }}
+            />
+          </div>
+
+          {/* Max Rotation Slider */}
+          <div className="card card-slider">
+            <h3 className="card-title">Max Rotation</h3>
+            <input
+              type="range"
+              min="0"
+              max="180"
+              value={get_max_rotation}
+              onChange={async (e) => {
+                set_max_rotation(e.target.value);
+                await blynk_update_api(AUTH_TOKEN, 2, e.target.value);
+              }}
+              className="slider"
+            />
+            <p>{get_max_rotation}°</p>
+          </div>
+
+          {/* Max Uptime Slider */}
+          <div className="card card-slider">
+            <h3 className="card-title">Max Uptime</h3>
+            <input
+              type="range"
+              min="0"
+              max="3600"
+              value={get_max_uptime}
+              onChange={async (e) => {
+                set_max_uptime(e.target.value);
+                await blynk_update_api(AUTH_TOKEN, 4, e.target.value);
+              }}
+              className="slider"
+            />
+            <p>{get_max_uptime}s</p>
+          </div>
+
+          {/* Max Water Volume Slider */}
+          <div className="card card-slider">
+            <h3 className="card-title">Max Water Volume</h3>
+            <input
+              type="range"
+              min="0"
+              max="1000000"
+              value={get_max_water_volume}
+              onChange={async (e) => {
+                set_max_water_volume(e.target.value);
+                await blynk_update_api(AUTH_TOKEN, 8, e.target.value);
+              }}
+              className="slider"
+            />
+            <p>{get_max_water_volume}L</p>
+          </div>
+        </div>
+
+        {/* Button On/Off */}
+        {/* <div className="button-container">
+          <button
+            className={`button-control ${isOn ? "on" : "off"}`}
+            onClick={toggleButton}
+          >
+            {isOn ? "Turn Off" : "Turn On"}
+          </button>
+        </div> */}
+
+        {/* Date Picker */}
+        <div className="date-picker-container">
+          <input type="date" className="date-picker" />
+        </div>
+
+        {/* Chart Section */}
+        <div className="chart-container">
+          <p className="chart-title">Usage Trends</p>
+          {/* Chart content here */}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default MainPage;

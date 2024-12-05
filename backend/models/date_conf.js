@@ -1,8 +1,9 @@
 const axios = require("axios");
 const blynk = require("./blynk_conf");
+const dotenv = require("dotenv").config();
 
 const DATE_VPIN = 7;
-const AUTH_TOKEN = "8MBnO3o_LjzhXp1-48BHdH4eA4lUWCg2";
+const AUTH_TOKEN = process.env.AUTH_TOKEN;
 
 var now = null;
 var next = null;
