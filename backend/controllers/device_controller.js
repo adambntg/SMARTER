@@ -8,6 +8,9 @@ exports.login = async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    console.log(`Username: ${username}`);
+    console.log(`Password: ${password}`);
+
     // Query untuk memeriksa apakah username dan password ada di tabel admin
     const result = await pool.query(
       "SELECT * FROM admin WHERE username = $1 AND password = $2",
@@ -18,12 +21,12 @@ exports.login = async (req, res) => {
     if (result.rows.length > 0) {
       return res
         .status(200)
-        .json({ message: "Login successful!", payload: response.rows });
+        .json({ message: "Login successful!", payload: result.rows });
     }
 
     return res.status(401).json({
       message: "Invalid username or password",
-      payload: response.rows,
+      payload: result.rows,
     });
   } catch (error) {
     return res.status(500).json({
@@ -159,4 +162,8 @@ exports.record_device = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+};
+
+exports.say_hi = async (req, res) => {
+  console.log("Hi!");
 };

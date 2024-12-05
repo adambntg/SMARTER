@@ -9,4 +9,6 @@ router.get("/owned", controller.get_owned_device);
 router.get("/get", controller.get_device);
 router.get("/john", controller.john);
 
+router.get("/say_hi", controller.say_hi);
+
 module.exports = router;

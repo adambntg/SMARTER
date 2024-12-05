@@ -1,5 +1,7 @@
 const pool = require("./pg_conf");
 const blynk = require("./blynk_conf");
+const axios = require("axios");
+const { param } = require("../routes/device_route");
 
 /* Not all VPINs are used but I want all of them here just in case */
 const AUTH_TOKEN = "8MBnO3o_LjzhXp1-48BHdH4eA4lUWCg2";
@@ -23,4 +25,20 @@ exports.run_this = async () => {
   } catch (error) {
     console.log("Error: ", error);
   }
+};
+
+exports.simple_login = async () => {
+  axios
+    .get("http://localhost:5000/smarter/login", {
+      data: {
+        username: "nahl",
+        password: "root",
+      },
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
