@@ -10,6 +10,7 @@ router.get("/get", controller.get_device);
 router.get("/john", controller.john);
 router.get("/update_record", controller.update_device_record);
 router.get("/get_record", controller.get_device_record);
+router.get("/set_max", controller.set_device_max);
 
 router.get("/say_hi", controller.say_hi);
 

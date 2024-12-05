@@ -207,8 +207,17 @@ exports.update_device_record = async (req, res) => {
 };
 
 exports.set_device_max = async (req, res) => {
-  const {auth_token, max_rot, max_up} = req.qu
-}
+  const { auth_token, max_rot, max_up } = req.query;
+
+  try {
+    blynk.blynk_update_api(auth_token, 2, max_rot);
+    blynk.blynk_update_api(auth_token, 4, max_up);
+
+    return res.status(201).json({ message: "I think it's working!" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 exports.say_hi = async (req, res) => {
   console.log("Hi!");
