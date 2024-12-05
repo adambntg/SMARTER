@@ -189,8 +189,8 @@ void setup()
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
 
-  // reset_hey_daddy();
-  yharon_synch();
+  reset_hey_daddy();
+  // yharon_synch();
   setup_servo();
   setup_lcd();
   setup_rtos();

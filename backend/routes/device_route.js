@@ -8,6 +8,8 @@ router.get("/all", controller.get_all_device);
 router.get("/owned", controller.get_owned_device);
 router.get("/get", controller.get_device);
 router.get("/john", controller.john);
+router.get("/update_record", controller.update_device_record);
+router.get("/get_record", controller.get_device_record);
 
 router.get("/say_hi", controller.say_hi);
 

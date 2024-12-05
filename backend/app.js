@@ -3,6 +3,7 @@ const cors = require("cors");
 const device_route = require("./routes/device_route");
 const date_test = require("./models/date_conf");
 const made_in_heaven = require("./models/made_in_heaven");
+const controller = require("./controllers/device_controller");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,7 +19,8 @@ app.use(
 // app.use(express.static(path.join(__dirname, "../frontend"))); // Menyajikan file statis dari folder frontend
 
 // setInterval(date_test.date_determine, 1000);
-setInterval(made_in_heaven.simple_login, 1000);
+setInterval(made_in_heaven.rt_update_record, 100);
+// setInterval(made_in_heaven.rt_get_record, 1000);
 
 app.use("/smarter", device_route);
 

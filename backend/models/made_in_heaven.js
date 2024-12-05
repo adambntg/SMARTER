@@ -2,6 +2,7 @@ const pool = require("./pg_conf");
 const blynk = require("./blynk_conf");
 const axios = require("axios");
 const { param } = require("../routes/device_route");
+const controller = require("../controllers/device_controller");
 
 /* Not all VPINs are used but I want all of them here just in case */
 const AUTH_TOKEN = "8MBnO3o_LjzhXp1-48BHdH4eA4lUWCg2";
@@ -27,18 +28,48 @@ exports.run_this = async () => {
   }
 };
 
+exports.rt_update_record = async () => {
+  axios
+    .get("http://localhost:5000/smarter/update_record", {
+      params: {
+        auth_token: AUTH_TOKEN,
+      },
+    })
+    .then((response) => {})
+    .catch((error) => {
+      console.error(error.message);
+    });
+};
+
+exports.rt_get_record = async () => {
+  axios
+    .get("http://localhost:5000/smarter/get_record", {
+      params: {
+        auth_token: AUTH_TOKEN,
+      },
+    })
+    .then((response) => {
+      console.log(
+        `TWV: ${response.data.total_water_volume} TU:${response.data.total_uptime}`
+      );
+    })
+    .catch((error) => {
+      console.error(error.message);
+    });
+};
+
 exports.simple_login = async () => {
   axios
     .get("http://localhost:5000/smarter/login", {
-      data: {
+      params: {
         username: "nahl",
         password: "root",
       },
     })
     .then((response) => {
-      console.log(response);
+      console.log(response.data.message);
     })
     .catch((error) => {
-      console.log(error);
+      console.log(error.message);
     });
 };
