@@ -7,7 +7,7 @@ import axios from "axios";
 // import blynk from "./models/blynk_conf";
 
 function MainPage() {
-  const AUTH_TOKEN = "oSFwsDBdiJmJluY-ZOM9HajmQaActNDj";
+  const AUTH_TOKEN = "pSRVDG8aDXrp2FK-gaHmqL2npUyzAFWN";
   const [get_max_uptime, set_max_uptime] = useState(0);
   const [get_uptime, set_uptime] = useState(0);
   const [get_rotation, set_rotation] = useState(0);
