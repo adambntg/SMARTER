@@ -121,23 +121,23 @@ function MainPage() {
 
           {/* Rotasi Servo */}
           <div className="card card-rotation rotasi-servo-card">
-            <p className="card-title">Rotasi Servo</p>
+            <p className="card-title">Servo Rotation</p>
             <CircularProgressbar
               value={get_rotation}
               maxValue={180}
               text={get_rotation}
-              // styles={{
-              //   path: {
-              //     stroke: "#00d1b2",
-              //     strokeLinecap: "round",
-              //     strokeWidth: 10,
-              //   },
-              //   text: {
-              //     fill: "#fff",
-              //     fontSize: "1.5rem",
-              //     fontWeight: "bold",
-              //   },
-              // }}
+            // styles={{
+            //   path: {
+            //     stroke: "#00d1b2",
+            //     strokeLinecap: "round",
+            //     strokeWidth: 10,
+            //   },
+            //   text: {
+            //     fill: "#fff",
+            //     fontSize: "1.5rem",
+            //     fontWeight: "bold",
+            //   },
+            // }}
             />
           </div>
 
