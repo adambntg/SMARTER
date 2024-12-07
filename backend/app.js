@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const device_route = require("./routes/device_route");
+const date_test = require("./models/date_conf");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,8 @@ app.use(
   })
 );
 // app.use(express.static(path.join(__dirname, "../frontend"))); // Menyajikan file statis dari folder frontend
+
+setInterval(date_test.date_determine, 1000);
 
 app.use("/sohei", device_route);
 

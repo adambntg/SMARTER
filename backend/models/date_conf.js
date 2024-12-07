@@ -1,0 +1,42 @@
+const axios = require("axios");
+const DATE_VPIN = 7;
+const AUTH_TOKEN = "8MBnO3o_LjzhXp1-48BHdH4eA4lUWCg2";
+
+var now = null;
+var next = null;
+
+axios
+  .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${DATE_VPIN}`)
+  .then((response) => {
+    console.log("Received: ", response.data);
+    next = response.data;
+  })
+  .catch((error) => {
+    console.error("Error: ", error);
+  });
+
+exports.date_determine = () => {
+  const date = new Date();
+  const format_date = date.toISOString().split("T")[0];
+  now = format_date;
+
+  // console.log(now);
+  // console.log(next);
+
+  if (now != next) {
+    console.log("Date change detected!");
+    next = format_date;
+    axios
+      .get(
+        `https://blynk.cloud/external/api/update?token=${AUTH_TOKEN}&v${DATE_VPIN}=${next}`
+      )
+      .then((response) => {
+        console.log("Sent: ", next);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  } else {
+    // console.log("No date change!");
+  }
+};
