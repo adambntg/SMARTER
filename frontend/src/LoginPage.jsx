@@ -23,7 +23,7 @@ function LoginPage() {
         })
         .then((response) => {
           if (response.status === 200) {
-            navigate("/main");
+            navigate("/LandingPage");
           } else {
             setErrorMessage("Login failed. Please check your credentials.");
           }

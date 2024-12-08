@@ -58,14 +58,14 @@ function MainPage() {
     /** ENABLE THIS LATER */
 
     const renew = setInterval(async () => {
-      set_max_rotation(await blynk_get_api(AUTH_TOKEN, 2));
-      set_max_uptime(await blynk_get_api(AUTH_TOKEN, 4));
-      set_max_water_volume(await blynk_get_api(AUTH_TOKEN, 8));
-      set_rotation(await blynk_get_api(AUTH_TOKEN, 0));
-      set_uptime(await blynk_get_api(AUTH_TOKEN, 5));
-      set_total_water_volume(await blynk_get_api(AUTH_TOKEN, 6));
-      set_total_uptime(await blynk_get_api(AUTH_TOKEN, 3));
-      set_date(await blynk_get_api(AUTH_TOKEN, 7));
+      // set_max_rotation(await blynk_get_api(AUTH_TOKEN, 2));
+      // set_max_uptime(await blynk_get_api(AUTH_TOKEN, 4));
+      // set_max_water_volume(await blynk_get_api(AUTH_TOKEN, 8));
+      // set_rotation(await blynk_get_api(AUTH_TOKEN, 0));
+      // set_uptime(await blynk_get_api(AUTH_TOKEN, 5));
+      // set_total_water_volume(await blynk_get_api(AUTH_TOKEN, 6));
+      // set_total_uptime(await blynk_get_api(AUTH_TOKEN, 3));
+      // set_date(await blynk_get_api(AUTH_TOKEN, 7));
     }, 1000);
 
     // const see_history = setInterval(async () => {
@@ -119,25 +119,25 @@ function MainPage() {
             <span className="uptime-timer">{get_uptime}s</span>
           </div>
 
-          {/* Rotasi Servo */}
+          {/* Servo Rotation */}
           <div className="card card-rotation rotasi-servo-card">
             <p className="card-title">Servo Rotation</p>
             <CircularProgressbar
               value={get_rotation}
               maxValue={180}
               text={get_rotation}
-            // styles={{
-            //   path: {
-            //     stroke: "#00d1b2",
-            //     strokeLinecap: "round",
-            //     strokeWidth: 10,
-            //   },
-            //   text: {
-            //     fill: "#fff",
-            //     fontSize: "1.5rem",
-            //     fontWeight: "bold",
-            //   },
-            // }}
+              // styles={{
+              //   path: {
+              //     stroke: "#00d1b2",
+              //     strokeLinecap: "round",
+              //     strokeWidth: 10,
+              //   },
+              //   text: {
+              //     fill: "#fff",
+              //     fontSize: "1.5rem",
+              //     fontWeight: "bold",
+              //   },
+              // }}
             />
           </div>
 
