@@ -130,8 +130,8 @@ exports.get_all_device_record = async (req, res) => {
 
     return res.status(201).json({
       message: `Receive all date from auth token ${auth_token}`,
-      payload: response.rows,
-      count: response.rowCount,
+      payload: payload,
+      count: response.rows,
       // date: response.rows[0].date.toISOString().split("T")[0],
       // total_uptime: response.rows[0].total_uptime,
       // total_water_volume: response.rows[0].total_water_volume,
@@ -144,14 +144,12 @@ exports.get_all_device_record = async (req, res) => {
 };
 
 exports.get_device_record = async (req, res) => {
-  const { auth_token } = req.query;
-  const date = new Date();
-  const format_date = date.toISOString().split("T")[0];
+  const { auth_token, date } = req.query;
 
   try {
     const query =
       "SELECT total_water_volume, total_uptime FROM history WHERE auth_token=$1 AND date=$2";
-    const data = [auth_token, format_date];
+    const data = [auth_token, date];
 
     const response = await pool.query(query, data);
 
@@ -211,20 +209,6 @@ exports.update_device_record = async (req, res) => {
       message: "A record of this daten and token alreadt exist!",
       payload: new_response.rows,
     });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-
-exports.set_device_max = async (req, res) => {
-  const { auth_token, max_rot, max_up, max_wat_vol } = req.query;
-
-  try {
-    blynk.blynk_update_api(auth_token, 2, max_rot);
-    blynk.blynk_update_api(auth_token, 4, max_up);
-    blynk.blynk_update_api(auth_token, 8, max_wat_vol);
-
-    return res.status(201).json({ message: "I think it's working!" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

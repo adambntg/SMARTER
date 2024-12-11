@@ -16,7 +16,6 @@ app.use(
     methods: "GET, POST, PUT, DELETE",
   })
 );
-// app.use(express.static(path.join(__dirname, "../frontend"))); // Menyajikan file statis dari folder frontend
 
 /** PLEASE ENABLE THIS LATER */
 rt.rt_synch();

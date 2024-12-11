@@ -1,0 +1,136 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Pastikan body mengisi seluruh tinggi layar */
+  background: linear-gradient(
+    145deg,
+    #00d1b2,
+    #007bff
+  ); /* Background hijau-biru */
+  color: rgb(0, 0, 0);
+}
+
+/* Logo Styling */
+
+.logo-container {
+  margin-bottom: 2rem; /* Adds space between the logo and the form */
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  width: 150px; /* Adjust the size of the logo */
+  height: auto;
+  object-fit: contain;
+}
+
+/* Background modern */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120vh;
+  background-color: #6e8efb, #4bff7e;
+  background: linear-gradient(190deg, #6e8efb, #4bff7e);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Kartu login */
+.login-card {
+  background: #fff;
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Judul */
+.login-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+/* Grup form */
+.form-group {
+  margin-bottom: 1rem;
+  text-align: left;
+  color: black;
+}
+
+label {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+/* Input styling */
+input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #6e8efb;
+  outline: none;
+  box-shadow: 0 0 8px rgba(110, 142, 251, 0.5);
+}
+
+/* Tombol login */
+.login-button {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(to right, 190deg, #6e8efb, #4bff7e);
+  background: linear-gradient(190deg, #6e8efb, #4bff7e);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-button:hover {
+  background: linear-gradient(to right, #6e8efb, #4bff7e);
+  transform: translateY(-2px);
+}
+
+/* Pesan error */
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+/* Animasi fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsif */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+
+  .login-card h2 {
+    font-size: 1.5rem;
+  }
+}

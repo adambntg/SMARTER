@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "./bak/App.css";
 import logoSmartWater from "./assets/logoSmartWater.png"; // Ensure the correct logo image is available
 
 function LoginPage() {

@@ -12,13 +12,14 @@
 #define WATER_VOLUME_MODE_VPIN V9
 #define OVERRIDE_MODE_VPIN V10
 
-#include <zang.h>
+#include <blynk_conf.h>
 #include <WiFi.h>
 #include <BlynkSimpleEsp32.h>
 #include <main.h>
+#include <smarter_conf.h>
 
-BaseType_t xTaskRotateMeter;
-TaskHandle_t xTaskRotateMeterHandle;
+BaseType_t xTaskMain;
+TaskHandle_t xTaskMainHandle;
 
 TimerHandle_t xUptimeTimer;
 TimerHandle_t xWaterVolumeTimer;
@@ -27,29 +28,29 @@ TimerHandle_t xTimeoutTimer;
 const char *ssid = "reset";
 const char *password = "HotspotCecep";
 
-int uptime = 0;
-int total_uptime = 0;
-int max_uptime = 999999999;
+static int uptime = 0;
+static int total_uptime = 0;
+static int max_uptime = 3600;
 
-int rotation = 0;
-int filtered_rotation = 0;
-int max_rotation = 180;
-int rotation_threshold = 10;
+static int rotation = 0;
+static int filtered_rotation = 0;
+static int max_rotation = 180;
+static int rotation_threshold = 10;
 
-float water_volume_coeff = 0.12F;
-float water_volume = 0.0F;
-float total_water_volume = 0.0F;
-float max_water_volume = 0.0F;
+static float water_volume_coeff = 0.12F;
+static float water_volume = 0.0F;
+static float total_water_volume = 0.0F;
+static float max_water_volume = 0.0F;
 
-int water_volume_mode = 0;
-int override_mode = 1;
+static int water_volume_mode = 0;
+static int override_mode = 1;
 
-void vTaskRotateMeter(void *pvParameters);
+void vTaskMain(void *pvParameters);
 void vUptimeTimerCallback(TimerHandle_t xTimer);
 void vWaterVolumeTimerCallback(TimerHandle_t xTimer);
 void setup_rtos();
-void reset_hey_daddy();
-void yharon_synch();
+void reset_virtual_pins();
+void synch_virtual_pins();
 
 BLYNK_WRITE(MAX_WATER_VOLUME_VPIN)
 {
@@ -100,9 +101,10 @@ BLYNK_WRITE(TOTAL_WATER_VOLUME_VPIN)
   Serial.println(total_water_volume);
 }
 
-void vTaskRotateMeter(void *pvParameters)
+void vTaskMain(void *pvParameters)
 {
   char buff[255];
+  int analog_rotation;
 
   while (1)
   {
@@ -113,11 +115,10 @@ void vTaskRotateMeter(void *pvParameters)
     {
       xTimerStart(xTimeoutTimer, 0);
     }
-    // Serial.println("LAGI SANTAI KAWAN!");
 
-    int anRe = analogRead(34);
+    analog_rotation = analogRead(34);
 
-    rotation = anRe * 181 / 4096;
+    rotation = analog_rotation * 181 / 4096;
 
     filtered_rotation = rotation <= max_rotation ? rotation : max_rotation;
     filtered_rotation *= xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? 0 : 1;
@@ -197,27 +198,24 @@ void setup_rtos()
   xUptimeTimer = xTimerCreate("Uptime Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vUptimeTimerCallback);
   xWaterVolumeTimer = xTimerCreate("Water Volume Timer", 100 / portTICK_PERIOD_MS, pdTRUE, (void *)1, vWaterVolumeTimerCallback);
   xTimeoutTimer = xTimerCreate("Timeout Timer", 5000 / portTICK_PERIOD_MS, pdTRUE, (void *)2, vTimeoutTimerCallback);
-
-  xTaskRotateMeter = xTaskCreate(vTaskRotateMeter, "Rotate Meter Task", 8192, NULL, 1, &xTaskRotateMeterHandle);
+  xTaskMain = xTaskCreate(vTaskMain, "Rotate Meter Task", 8192, NULL, 1, &xTaskMainHandle);
 
   vTaskDelete(NULL);
 }
 
-void reset_hey_daddy()
+void reset_virtual_pins()
 {
   /*You shouldn't reset the constraints LMAO*/
   Blynk.virtualWrite(ROTATION_VPIN, 0);
-  // Blynk.virtualWrite(MAX_ROTATION_VPIN, 0);
   Blynk.virtualWrite(UPTIME_VPIN, 0);
   Blynk.virtualWrite(TOTAL_UPTIME_VPIN, 0);
-  // Blynk.virtualWrite(MAX_UPTIME_VPIN, 0);
   Blynk.virtualWrite(WATER_VOLUME_VPIN, 0);
   Blynk.virtualWrite(TOTAL_WATER_VOLUME_VPIN, 0);
   Blynk.virtualWrite(DATE_VPIN, "Alpha");
   Serial.println("Pins reset!");
 }
 
-void yharon_synch()
+void synch_virtual_pins()
 {
   Blynk.syncVirtual(MAX_UPTIME_VPIN);
   Blynk.syncVirtual(MAX_ROTATION_VPIN);
@@ -237,13 +235,11 @@ void setup()
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
 
-  // reset_hey_daddy();
-  yharon_synch();
+  // reset_virtual_pins();
+  synch_virtual_pins();
   setup_servo();
   setup_lcd();
   setup_rtos();
-
-  // vTaskStartScheduler();
 }
 
 void loop()

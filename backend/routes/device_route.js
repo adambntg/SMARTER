@@ -10,6 +10,5 @@ router.get("/get", controller.get_device);
 router.get("/update_record", controller.update_device_record);
 router.get("/get_record", controller.get_device_record);
 router.get("/get_all_record", controller.get_all_device_record);
-router.get("/set_max", controller.set_device_max);
 
 module.exports = router;

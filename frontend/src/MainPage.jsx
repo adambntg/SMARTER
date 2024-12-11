@@ -7,7 +7,7 @@ import axios from "axios";
 // import blynk from "./models/blynk_conf";
 
 function MainPage() {
-  const AUTH_TOKEN = "pSRVDG8aDXrp2FK-gaHmqL2npUyzAFWN";
+  const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
   const [get_max_uptime, set_max_uptime] = useState(0);
   const [get_uptime, set_uptime] = useState(0);
   const [get_rotation, set_rotation] = useState(0);
@@ -47,14 +47,7 @@ function MainPage() {
       });
   };
 
-  const fetchedData = [
-    { date: "2024-12-07T17:00:00.000Z", total_water_volume: 0, total_up: 0 },
-    { date: "2024-12-06T17:00:00.000Z", total_water_volume: 0, total_up: 0 },
-    { date: "2024-12-05T17:00:00.000Z", total_water_volume: 0, total_up: 0 },
-  ];
-
   useEffect(() => {
-    set_history(fetchedData);
     /** ENABLE THIS LATER */
 
     const renew = setInterval(async () => {
@@ -68,24 +61,24 @@ function MainPage() {
       // set_date(await blynk_get_api(AUTH_TOKEN, 7));
     }, 1000);
 
-    // const see_history = setInterval(async () => {
-    //   await axios
-    //     .get("http://localhost:5000/smarter/get_all_record", {
-    //       params: {
-    //         auth_token: AUTH_TOKEN,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       console.log(response.data.payload);
-    //       set_history(response.data.payload);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // }, 1000);
+    const see_history = setInterval(async () => {
+      // await axios
+      //   .get("http://localhost:5000/smarter/get_all_record", {
+      //     params: {
+      //       auth_token: AUTH_TOKEN,
+      //     },
+      //   })
+      //   .then((response) => {
+      //     console.log(response.data.payload);
+      //     set_history(response.data.payload);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
+    }, 1000);
 
     return () => {
-      // clearInterval(see_history);
+      clearInterval(see_history);
       clearInterval(renew);
     };
   }, []);

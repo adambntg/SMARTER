@@ -2,9 +2,6 @@ import React from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
-import "./bak/App.css";
-import "./bak/tailwind.css";
-import "./bak/compiled-tailwind.css";
 import logoSmartWater from "./assets/logoSmartWater.png"; // Ensure the correct logo image is available
 import BGlanding from "./assets/BGlanding.jpg"; // Ensure the correct logo image is available
 import Adam from "./assets/Adam.jpg";

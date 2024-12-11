@@ -1,5 +1,5 @@
 const axios = require("axios");
-const blynk = require("./blynk_conf");
+const blynk = require("../models/blynk_conf");
 const dotenv = require("dotenv").config();
 
 const DATE_VPIN = 7;
