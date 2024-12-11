@@ -7,13 +7,12 @@ import BGlanding from "./assets/BGlanding.jpg"; // Ensure the correct logo image
 import Adam from "./assets/Adam.jpg";
 import Aqshal from "./assets/Aqshal.jpg";
 import Cecep from "./assets/Cecep.jpg";
-import { api_url } from "./query.js";
+import { local_api_url } from "./query.js";
 
 export default function LandingPage() {
-
-  const vrombop = api_url("/login", {
+  const vrombop = local_api_url("/login", {
     username: "nahl",
-    password: "root"
+    password: "root",
   });
 
   console.log(vrombop);

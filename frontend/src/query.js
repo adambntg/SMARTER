@@ -1,6 +1,20 @@
 import axios from "axios";
 
-export const api_url = async (path, params) => {
+export const local_api_url = async (path, params) => {
+  const url = "http://localhost:5000";
+
+  try {
+    const response = await axios.get(url + "/smarter" + path, {
+      params: { ...params },
+    });
+    // console.log(response.data.message);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deploy_api_url = async (path, params) => {
   const url = import.meta.env.VITE_BE_URL;
 
   try {

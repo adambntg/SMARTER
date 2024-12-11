@@ -6,7 +6,7 @@ import axios from "axios";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 // import blynk from "./models/blynk_conf";
-import { api_url } from "./query";
+import { local_api_url } from "./query";
 
 function MainPage() {
   const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
@@ -19,6 +19,7 @@ function MainPage() {
   const [get_max_rotation, set_max_rotation] = useState(0);
   const [get_max_water_volume, set_max_water_volume] = useState(0);
   const [get_date, set_date] = useState("");
+  const [get_override_mode, set_override_mode] = useState(0);
 
   const [get_history, set_history] = useState([]);
   const [get_owned, set_owned] = useState([]);
@@ -63,59 +64,33 @@ function MainPage() {
       // set_total_water_volume(await blynk_get_api(AUTH_TOKEN, 6));
       // set_total_uptime(await blynk_get_api(AUTH_TOKEN, 3));
       // set_date(await blynk_get_api(AUTH_TOKEN, 7));
+      // set_override_mode(await blynk_get_api(AUTH_TOKEN, 10));
     }, 1000);
 
-    const see_history =
-      setInterval(() => {
-        const res = api_url("/get_all_record", {
-          auth_token: AUTH_TOKEN,
+    const see_history = setInterval(() => {
+      local_api_url("/get_all_record", {
+        auth_token: AUTH_TOKEN,
+      })
+        .then((data) => {
+          console.log(data.payload);
+          set_history(data.payload);
+        })
+        .catch((error) => {
+          console.log(error);
         });
-
-        set_history(res.payload);
-
-        // await axios
-        //   .get("http://localhost:5000/smarter/get_all_record", {
-        //     params: {
-        //       auth_token: AUTH_TOKEN,
-        //     },
-        //   })
-        //   .then((response) => {
-        //     if (response.data.count > 0) {
-        //       console.log(response.data.payload);
-        //       set_history(response.data.payload);
-        //     }
-        //     console.log(response.data.message);
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //   });
-      }, 1000);
+    }, 1000);
 
     const test_ddown = setInterval(() => {
-      const res = api_url("/owned", {
+      local_api_url("/owned", {
         owner: "nahl",
-      }).then(data => {
-        console.log(data);
-        set_owned(data.payload);
-      }).catch(error => {
-        console.log(error)
-      });
-
-      // set_owned(res.payload);
-
-      // await axios
-      //   .get("http://localhost:5000/smarter/owned", {
-      //     params: {
-      //       owner: "nahl",
-      //     },
-      //   })
-      //   .then((response) => {
-      //     console.log(response.data.payload);
-      //     set_owned(response.data.payload);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      })
+        .then((data) => {
+          // console.log(data);
+          set_owned(data.payload);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }, 1000);
 
     return () => {
@@ -130,11 +105,14 @@ function MainPage() {
     return date.toISOString().split("T")[0];
   };
 
-  const foo = ["A", "B", "C"];
-  const bar = ["D", "E", "F"];
+  const dates = get_history.map((element) => fmt_date(element.date));
+  const total_uptimes = get_history.map((element) => element.total_uptime);
+  const total_water_volumes = get_history.map(
+    (element) => element.total_water_volume
+  );
 
   return (
-    <div className="min-h-screen flex justify-center items-center shadow-[#333] p-10 font-mono">
+    <div className="min-h-screen flex justify-center items-center shadow-[#333] p-10 font-sans">
       <div className="bg-[white] w-full max-w-[1200px] shadow-[0_4px_10px_rgba(0,0,0,0.1)] text-[#333] p-10 rounded-[15px]">
         {/* Logo */}
         <div className="flex w-auto justify-center text-center bg-white rounded mb-8 p-2.5">
@@ -150,9 +128,11 @@ function MainPage() {
 
         <div className="flex justify-center my-5">
           <select className="font-bold">
-            {get_owned.map((element) => {
+            {get_owned.map((element, index) => {
               return (
-                <option value={element.auth_token}>{element.auth_token}</option>
+                <option key={index} value={element.auth_token}>
+                  {element.auth_token}
+                </option>
               );
             })}
           </select>
@@ -262,42 +242,51 @@ function MainPage() {
         </div>
 
         <div className="flex justify-start">
-          {/* Button On/Off */}
-          <div className="button-container">
-            <button
-              className="bg-[#00d1b2] text-[white] text-base cursor-pointer transition-[background-color] duration-[0.3s] ease-[ease-in-out] px-5 py-2.5 rounded-[5px] border-[none] hover:bg-white hover:text-[#007bff] m-2.5"
-            // onClick={toggleButton}
-            >
-              Placeholder
-            </button>
-          </div>
+          <label className="flex items-center cursor-pointer mx-5">
+            Override Mode
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              onChange={(e) => {
+                const a = !get_override_mode;
+                set_override_mode(a);
+                console.log(a);
+              }}
+            />
+            <div className="w-14 h-8 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors duration-300 relative mx-5"></div>
+          </label>
 
-          {/* Button On/Off */}
-          <div className="button-container">
-            <button
-              className="bg-[#00d1b2] text-[white] text-base cursor-pointer transition-[background-color] duration-[0.3s] ease-[ease-in-out] px-5 py-2.5 rounded-[5px] border-[none] hover:bg-white hover:text-[#007bff] m-2.5"
-            // onClick={toggleButton}
-            >
-              Placeholder
-            </button>
-          </div>
+          <label className="flex items-center cursor-pointer mx-5">
+            Water Volume Mode
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              defaultChecked={1}
+            />
+            <div className="w-14 h-8 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors duration-300 relative mx-5"></div>
+          </label>
         </div>
 
         {/* Chart Section */}
         <div className="text-center bg-[rgba(255,255,255,0.1)] mt-10 p-5 rounded-[10px] grid">
           <p className="text-2xl font-semibold mb-5">Usage Trends</p>
           {/* Chart content here */}
-          {/* <Bar
+          <Bar
+            className="font-mono"
             data={{
-              labels: foo,
+              labels: dates,
               datasets: [
                 {
-                  label: "Test",
-                  data: bar,
+                  label: "Total Uptime",
+                  data: total_uptimes,
+                },
+                {
+                  label: "Total Water Volume",
+                  data: total_water_volumes,
                 },
               ],
             }}
-          /> */}
+          />
           {/* <div className="flex justify-center">
             <ul className="w-2/3">
               {get_history.map((element) => {
