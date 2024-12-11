@@ -3,6 +3,8 @@ import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import logoSmartWater from "./assets/logoSmartWater.png";
 import axios from "axios";
+import { Chart as ChartJS } from "chart.js/auto";
+import { Bar, Doughnut, Line } from "react-chartjs-2";
 // import blynk from "./models/blynk_conf";
 
 function MainPage() {
@@ -108,6 +110,9 @@ function MainPage() {
     const date = new Date(unfmt_date);
     return date.toISOString().split("T")[0];
   };
+
+  const foo = ["A", "B", "C"];
+  const bar = ["D", "E", "F"];
 
   return (
     <div className="min-h-screen flex justify-center items-center shadow-[#333] p-10 font-mono">
@@ -263,7 +268,18 @@ function MainPage() {
         <div className="text-center bg-[rgba(255,255,255,0.1)] mt-10 p-5 rounded-[10px] grid">
           <p className="text-2xl font-semibold mb-5">Usage Trends</p>
           {/* Chart content here */}
-          <div className="flex justify-center">
+          {/* <Bar
+            data={{
+              labels: foo,
+              datasets: [
+                {
+                  label: "Test",
+                  data: bar,
+                },
+              ],
+            }}
+          /> */}
+          {/* <div className="flex justify-center">
             <ul className="w-2/3">
               {get_history.map((element) => {
                 return (
@@ -279,7 +295,7 @@ function MainPage() {
                 );
               })}
             </ul>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
