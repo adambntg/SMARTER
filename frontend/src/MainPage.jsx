@@ -9,6 +9,7 @@ function MainPage() {
   const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
   const [get_max_uptime, set_max_uptime] = useState(0);
   const [get_uptime, set_uptime] = useState(0);
+  const [get_water_volume, set_water_volume] = useState(0);
   const [get_rotation, set_rotation] = useState(0);
   const [get_total_uptime, set_total_uptime] = useState(0);
   const [get_total_water_volume, set_total_water_volume] = useState(0.0);
@@ -101,24 +102,30 @@ function MainPage() {
         <div className="grid gap-5 mb-10">
           {/* Total Uptime */}
           <div className="flex justify-between">
-            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#f0f8ff] w-full h-full mx-5">
+            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#f0f8ff] w-full h-full mx-2.5">
               <h3 className="text-xl font-semibold mb-[15px]">Total Uptime</h3>
               <p>{get_total_uptime}s</p>
             </div>
             {/* Total Water Volume */}
-            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#f9f5f2] w-full h-full mx-5">
+            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#f9f5f2] w-full h-full mx-2.5">
               <h3 className="text-xl font-semibold mb-[15px]">
                 Total Water Volume
               </h3>
               <p>{get_total_water_volume}L</p>
             </div>
             {/* Real-Time Uptime */}
-            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] text-xl mb-2.5 w-full h-full mx-5">
-              <h3 className="text-xl font-semibold mb-[15px]">
-                Real-Time Uptime
-              </h3>
-              <span className="text-[2rem] font-bold text-[#007bff] block mt-2.5">
+            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] text-xl mb-2.5 w-full h-full mx-2.5">
+              <h3 className="text-xl font-semibold mb-[15px]">RT Uptime</h3>
+              <span className="text-[1.5rem] font-bold text-[#007bff] block mt-2.5">
                 {get_uptime}s
+              </span>
+            </div>
+            <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] text-xl mb-2.5 w-full h-full mx-2.5">
+              <h3 className="text-xl font-semibold mb-[15px]">
+                RT Water Volume
+              </h3>
+              <span className="text-[1.5rem] font-bold text-[#007bff] block mt-2.5">
+                {get_water_volume}mL
               </span>
             </div>
           </div>
@@ -194,20 +201,27 @@ function MainPage() {
           </div>
         </div>
 
-        {/* Button On/Off */}
-        {/* <div className="button-container">
-          <button
-            className={`button-control ${isOn ? "on" : "off"}`}
-            onClick={toggleButton}
-          >
-            {isOn ? "Turn Off" : "Turn On"}
-          </button>
-        </div> */}
+        <div className="flex justify-start">
+          {/* Button On/Off */}
+          <div className="button-container">
+            <button
+              className="bg-[#00d1b2] text-[white] text-base cursor-pointer transition-[background-color] duration-[0.3s] ease-[ease-in-out] px-5 py-2.5 rounded-[5px] border-[none] hover:bg-white hover:text-[#007bff] m-2.5"
+              // onClick={toggleButton}
+            >
+              Placeholder
+            </button>
+          </div>
 
-        {/* Date Picker */}
-        {/* <div className="date-picker-container">
-          <input type="date" className="date-picker" />
-        </div> */}
+          {/* Button On/Off */}
+          <div className="button-container">
+            <button
+              className="bg-[#00d1b2] text-[white] text-base cursor-pointer transition-[background-color] duration-[0.3s] ease-[ease-in-out] px-5 py-2.5 rounded-[5px] border-[none] hover:bg-white hover:text-[#007bff] m-2.5"
+              // onClick={toggleButton}
+            >
+              Placeholder
+            </button>
+          </div>
+        </div>
 
         {/* Chart Section */}
         <div className="text-center bg-[rgba(255,255,255,0.1)] mt-10 p-5 rounded-[10px]">
