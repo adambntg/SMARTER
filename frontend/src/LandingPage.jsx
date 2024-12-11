@@ -2,13 +2,23 @@ import React from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
-import logoSmartWater from "./assets/logoSmartWater.png"; // Ensure the correct logo image is available
+import logoSmartWater from "./assets/logosmartwater.png"; // Ensure the correct logo image is available
 import BGlanding from "./assets/BGlanding.jpg"; // Ensure the correct logo image is available
 import Adam from "./assets/Adam.jpg";
 import Aqshal from "./assets/Aqshal.jpg";
 import Cecep from "./assets/Cecep.jpg";
+import { api_url } from "./query.js";
 
 export default function LandingPage() {
+
+  const vrombop = api_url("/login", {
+    username: "nahl",
+    password: "root"
+  });
+
+  console.log(vrombop);
+  console.log("TEST");
+
   return (
     <>
       <Navbar transparent />

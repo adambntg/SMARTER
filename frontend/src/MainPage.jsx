@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import logoSmartWater from "./assets/logoSmartWater.png";
+import logoSmartWater from "./assets/logosmartwater.png";
 import axios from "axios";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 // import blynk from "./models/blynk_conf";
+import { api_url } from "./query";
 
 function MainPage() {
   const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
@@ -64,39 +65,57 @@ function MainPage() {
       // set_date(await blynk_get_api(AUTH_TOKEN, 7));
     }, 1000);
 
-    const see_history = setInterval(async () => {
-      await axios
-        .get("http://localhost:5000/smarter/get_all_record", {
-          params: {
-            auth_token: AUTH_TOKEN,
-          },
-        })
-        .then((response) => {
-          if (response.data.count > 0) {
-            console.log(response.data.payload);
-            set_history(response.data.payload);
-          }
-          console.log(response.data.message);
-        })
-        .catch((error) => {
-          console.log(error);
+    const see_history =
+      setInterval(() => {
+        const res = api_url("/get_all_record", {
+          auth_token: AUTH_TOKEN,
         });
-    }, 1000);
 
-    const test_ddown = setInterval(async () => {
-      await axios
-        .get("http://localhost:5000/smarter/owned", {
-          params: {
-            owner: "nahl",
-          },
-        })
-        .then((response) => {
-          console.log(response.data.payload);
-          set_owned(response.data.payload);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+        set_history(res.payload);
+
+        // await axios
+        //   .get("http://localhost:5000/smarter/get_all_record", {
+        //     params: {
+        //       auth_token: AUTH_TOKEN,
+        //     },
+        //   })
+        //   .then((response) => {
+        //     if (response.data.count > 0) {
+        //       console.log(response.data.payload);
+        //       set_history(response.data.payload);
+        //     }
+        //     console.log(response.data.message);
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
+      }, 1000);
+
+    const test_ddown = setInterval(() => {
+      const res = api_url("/owned", {
+        owner: "nahl",
+      }).then(data => {
+        console.log(data);
+        set_owned(data.payload);
+      }).catch(error => {
+        console.log(error)
+      });
+
+      // set_owned(res.payload);
+
+      // await axios
+      //   .get("http://localhost:5000/smarter/owned", {
+      //     params: {
+      //       owner: "nahl",
+      //     },
+      //   })
+      //   .then((response) => {
+      //     console.log(response.data.payload);
+      //     set_owned(response.data.payload);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     }, 1000);
 
     return () => {
@@ -247,7 +266,7 @@ function MainPage() {
           <div className="button-container">
             <button
               className="bg-[#00d1b2] text-[white] text-base cursor-pointer transition-[background-color] duration-[0.3s] ease-[ease-in-out] px-5 py-2.5 rounded-[5px] border-[none] hover:bg-white hover:text-[#007bff] m-2.5"
-              // onClick={toggleButton}
+            // onClick={toggleButton}
             >
               Placeholder
             </button>
@@ -257,7 +276,7 @@ function MainPage() {
           <div className="button-container">
             <button
               className="bg-[#00d1b2] text-[white] text-base cursor-pointer transition-[background-color] duration-[0.3s] ease-[ease-in-out] px-5 py-2.5 rounded-[5px] border-[none] hover:bg-white hover:text-[#007bff] m-2.5"
-              // onClick={toggleButton}
+            // onClick={toggleButton}
             >
               Placeholder
             </button>

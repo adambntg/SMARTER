@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import logoSmartWater from "./assets/logoSmartWater.png"; // Ensure the correct logo image is available
+import logoSmartWater from "./assets/logosmartwater.png"; // Ensure the correct logo image is available
 
 function LoginPage() {
   const [username, setUsername] = useState("");
