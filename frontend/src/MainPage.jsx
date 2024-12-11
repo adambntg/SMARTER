@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import "./bak/MainPage.css";
 import logoSmartWater from "./assets/logoSmartWater.png";
 import axios from "axios";
 // import blynk from "./models/blynk_conf";
@@ -84,59 +83,59 @@ function MainPage() {
   }, []);
 
   return (
-    <div className="main-container font-mono">
-      <div className="dashboard-card">
+    <div className="min-h-screen flex justify-center items-center shadow-[#333] p-10 font-mono">
+      <div className="bg-[white] w-full max-w-[1200px] shadow-[0_4px_10px_rgba(0,0,0,0.1)] text-[#333] p-10 rounded-[15px]">
         {/* Logo */}
-        <div className="logo-container">
-          <img src={logoSmartWater} alt="SmartWater Logo" className="logo" />
+        <div className="flex w-auto justify-center text-center bg-white rounded mb-8 p-2.5">
+          <img
+            src={logoSmartWater}
+            alt="SmartWater Logo"
+            className="w-[150px] h-auto object-contain"
+          />
         </div>
-        <p className="main-title">Dashboard</p>
+        <p className="text-[2rem] text-center font-semibold text-[#333] mb-[30px]">
+          Dashboard
+        </p>
 
         {/* Card Container */}
-        <div className="card-container">
+        <div className="grid grid-cols-[repeat(_auto-fill,minmax(280px,1fr)_)] gap-5 mb-10">
           {/* Total Uptime */}
-          <div className="card card-uptime">
-            <h3 className="card-title">Total Uptime</h3>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#f0f8ff]">
+            <h3 className="text-xl font-semibold mb-[15px]">Total Uptime</h3>
             <p>{get_total_uptime}s</p>
           </div>
 
           {/* Total Water Volume */}
-          <div className="card card-water">
-            <h3 className="card-title">Total Water Volume</h3>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#f9f5f2]">
+            <h3 className="text-xl font-semibold mb-[15px]">
+              Total Water Volume
+            </h3>
             <p>{get_total_water_volume}L</p>
           </div>
 
           {/* Real-Time Uptime */}
-          <div className="card card-uptime-realtime">
-            <h3 className="card-title">Real-Time Uptime</h3>
-            <span className="uptime-timer">{get_uptime}s</span>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] text-xl mb-2.5">
+            <h3 className="text-xl font-semibold mb-[15px]">
+              Real-Time Uptime
+            </h3>
+            <span className="text-[2rem] font-bold text-[#007bff] block mt-2.5">
+              {get_uptime}s
+            </span>
           </div>
 
           {/* Servo Rotation */}
-          <div className="card card-rotation rotasi-servo-card">
-            <p className="card-title">Servo Rotation</p>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#e8f9f5] col-[span_2] min-h-[250px] flex justify-center items-center p-5">
+            <p className="text-xl font-semibold mb-[15px]">Servo Rotation</p>
             <CircularProgressbar
               value={get_rotation}
               maxValue={180}
               text={get_rotation}
-              // styles={{
-              //   path: {
-              //     stroke: "#00d1b2",
-              //     strokeLinecap: "round",
-              //     strokeWidth: 10,
-              //   },
-              //   text: {
-              //     fill: "#fff",
-              //     fontSize: "1.5rem",
-              //     fontWeight: "bold",
-              //   },
-              // }}
             />
           </div>
 
           {/* Max Rotation Slider */}
-          <div className="card card-slider">
-            <h3 className="card-title">Max Rotation</h3>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#fff3e6]">
+            <h3 className="text-xl font-semibold mb-[15px]">Max Rotation</h3>
             <input
               type="range"
               min="0"
@@ -146,14 +145,14 @@ function MainPage() {
                 set_max_rotation(e.target.value);
                 await blynk_update_api(AUTH_TOKEN, 2, e.target.value);
               }}
-              className="slider"
+              className="w-[90%] h-2 appearance-none mx-0 my-2.5 rounded-[5px]"
             />
             <p>{get_max_rotation}°</p>
           </div>
 
           {/* Max Uptime Slider */}
-          <div className="card card-slider">
-            <h3 className="card-title">Max Uptime</h3>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#fff3e6]">
+            <h3 className="text-xl font-semibold mb-[15px]">Max Uptime</h3>
             <input
               type="range"
               min="0"
@@ -163,14 +162,16 @@ function MainPage() {
                 set_max_uptime(e.target.value);
                 await blynk_update_api(AUTH_TOKEN, 4, e.target.value);
               }}
-              className="slider"
+              className="w-[90%] h-2 appearance-none mx-0 my-2.5 rounded-[5px]"
             />
             <p>{get_max_uptime}s</p>
           </div>
 
           {/* Max Water Volume Slider */}
-          <div className="card card-slider">
-            <h3 className="card-title">Max Water Volume</h3>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#fff3e6]">
+            <h3 className="text-xl font-semibold mb-[15px]">
+              Max Water Volume
+            </h3>
             <input
               type="range"
               min="0"
@@ -180,13 +181,13 @@ function MainPage() {
                 set_max_water_volume(e.target.value);
                 await blynk_update_api(AUTH_TOKEN, 8, e.target.value);
               }}
-              className="slider"
+              className="w-[90%] h-2 appearance-none mx-0 my-2.5 rounded-[5px]"
             />
             <p>{get_max_water_volume}mL</p>
           </div>
 
-          <div className="card card-slider">
-            <h3 className="card-title">Date</h3>
+          <div className="bg-[rgba(255,255,255,0.9)] shadow-[0_4px_8px_rgba(0,0,0,0.1)] text-center transition-all duration-[0.3s] ease-[ease-in-out] p-5 rounded-[10px] border-2 border-solid border-[#ddd] hover:-translate-y-2.5 hover:shadow-[0_6px_12px_rgba(0,0,0,0.2)] bg-[#fff3e6]">
+            <h3 className="text-xl font-semibold mb-[15px]">Date</h3>
             <p>{get_date}</p>
           </div>
         </div>
@@ -207,8 +208,8 @@ function MainPage() {
         </div> */}
 
         {/* Chart Section */}
-        <div className="chart-container">
-          <p className="chart-title">Usage Trends</p>
+        <div className="text-center bg-[rgba(255,255,255,0.1)] mt-10 p-5 rounded-[10px]">
+          <p className="text-2xl font-semibold mb-5">Usage Trends</p>
           <p>{get_history.length}</p>
           {/* Chart content here */}
           <ul>
