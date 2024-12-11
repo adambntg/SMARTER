@@ -128,10 +128,17 @@ exports.get_all_device_record = async (req, res) => {
 
     const response = await pool.query(query, data);
 
+    if (response.rowCount < 1) {
+      return res.status(200).json({
+        message: `No record from auth token ${auth_token}`,
+        count: response.rowCount,
+      });
+    }
+
     return res.status(201).json({
       message: `Receive all date from auth token ${auth_token}`,
-      payload: payload,
-      count: response.rows,
+      payload: response.rows,
+      count: response.rowCount,
       // date: response.rows[0].date.toISOString().split("T")[0],
       // total_uptime: response.rows[0].total_uptime,
       // total_water_volume: response.rows[0].total_water_volume,

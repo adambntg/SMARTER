@@ -18,6 +18,7 @@ function MainPage() {
   const [get_date, set_date] = useState("");
 
   const [get_history, set_history] = useState([]);
+  const [get_owned, set_owned] = useState([]);
 
   const blynk_get_api = async (AUTH_TOKEN, PIN) => {
     return axios
@@ -62,26 +63,51 @@ function MainPage() {
     }, 1000);
 
     const see_history = setInterval(async () => {
-      // await axios
-      //   .get("http://localhost:5000/smarter/get_all_record", {
-      //     params: {
-      //       auth_token: AUTH_TOKEN,
-      //     },
-      //   })
-      //   .then((response) => {
-      //     console.log(response.data.payload);
-      //     set_history(response.data.payload);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
+      await axios
+        .get("http://localhost:5000/smarter/get_all_record", {
+          params: {
+            auth_token: AUTH_TOKEN,
+          },
+        })
+        .then((response) => {
+          if (response.data.count > 0) {
+            console.log(response.data.payload);
+            set_history(response.data.payload);
+          }
+          console.log(response.data.message);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }, 1000);
+
+    const test_ddown = setInterval(async () => {
+      await axios
+        .get("http://localhost:5000/smarter/owned", {
+          params: {
+            owner: "nahl",
+          },
+        })
+        .then((response) => {
+          console.log(response.data.payload);
+          set_owned(response.data.payload);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }, 1000);
 
     return () => {
       clearInterval(see_history);
       clearInterval(renew);
+      clearInterval(test_ddown);
     };
   }, []);
+
+  const fmt_date = (unfmt_date) => {
+    const date = new Date(unfmt_date);
+    return date.toISOString().split("T")[0];
+  };
 
   return (
     <div className="min-h-screen flex justify-center items-center shadow-[#333] p-10 font-mono">
@@ -94,9 +120,19 @@ function MainPage() {
             className="w-[150px] h-auto object-contain"
           />
         </div>
-        <p className="text-[2rem] text-center font-semibold text-[#333] mb-[30px]">
+        <p className="text-[2rem] text-center font-semibold text-[#333] my-10">
           Dashboard
         </p>
+
+        <div className="flex justify-center my-5">
+          <select className="font-bold">
+            {get_owned.map((element) => {
+              return (
+                <option value={element.auth_token}>{element.auth_token}</option>
+              );
+            })}
+          </select>
+        </div>
 
         {/* Card Container */}
         <div className="grid gap-5 mb-10">
@@ -224,17 +260,26 @@ function MainPage() {
         </div>
 
         {/* Chart Section */}
-        <div className="text-center bg-[rgba(255,255,255,0.1)] mt-10 p-5 rounded-[10px]">
+        <div className="text-center bg-[rgba(255,255,255,0.1)] mt-10 p-5 rounded-[10px] grid">
           <p className="text-2xl font-semibold mb-5">Usage Trends</p>
-          <p>{get_history.length}</p>
           {/* Chart content here */}
-          <ul>
-            {get_history.map((item, index) => {
-              <li>
-                <p>pro</p>;
-              </li>;
-            })}
-          </ul>
+          <div className="flex justify-center">
+            <ul className="w-2/3">
+              {get_history.map((element) => {
+                return (
+                  <li className="my-2 outline outline-1 rounded-xl flex justify-start">
+                    <p className="ml-5">Date: {fmt_date(element.date)}</p>
+                    <p className="ml-5">
+                      Total water volume: {element.total_water_volume}mL
+                    </p>
+                    <p className="ml-5">
+                      Total uptime: {element.total_uptime}s
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

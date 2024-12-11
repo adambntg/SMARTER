@@ -18,7 +18,7 @@ app.use(
 );
 
 /** PLEASE ENABLE THIS LATER */
-rt.rt_synch();
+// rt.rt_synch();
 
 app.use("/smarter", device_route);
 
