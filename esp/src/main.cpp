@@ -24,8 +24,8 @@ TimerHandle_t xUptimeTimer;
 TimerHandle_t xWaterVolumeTimer;
 TimerHandle_t xTimeoutTimer;
 
-const char *ssid = "Wokwi-GUEST";
-const char *password = "";
+const char *ssid = "reset";
+const char *password = "HotspotCecep";
 
 int uptime = 0;
 int total_uptime = 0;
