@@ -1,5 +1,7 @@
 const pool = require("../models/pg_conf");
 const blynk = require("../models/blynk_conf");
+const { response } = require("express");
+const date_fns = require("date-fns");
 
 pool.connect().then(() => {
   console.log("Connected to backend database! (General)");
@@ -175,13 +177,24 @@ exports.get_device_record = async (req, res) => {
 };
 
 exports.update_device_record = async (req, res) => {
-  /* CHANGE THIS LATER NAHUI */
+  /* CHANGE THIS LATER */
   const { auth_token } = req.query;
   const date = new Date();
-  const format_date = date.toISOString().split("T")[0];
+  const format_date = date_fns.format(date, "yyyy-MM-dd");
 
-  const total_water_volume = await blynk.blynk_get_api(auth_token, 6);
-  const total_uptime = await blynk.blynk_get_api(auth_token, 3);
+  const PARAMS = {
+    v6: true,
+    v3: true,
+  };
+
+  const blynk_res = await blynk.blynk_get_api(auth_token, PARAMS);
+
+  const total_uptime = blynk_res["v3"];
+  const total_water_volume = blynk_res["v6"];
+
+  // console.log(`TUPT: ${total_uptime} TWVM: ${total_water_volume}`);
+
+  // console.log(`CHECKING FOR DATE ${format_date}`);
 
   try {
     const query = "SELECT * FROM history WHERE date=$1 AND auth_token=$2";
@@ -190,6 +203,7 @@ exports.update_device_record = async (req, res) => {
     const response = await pool.query(query, data);
 
     if (response.rowCount < 1) {
+      // console.log("New entry!");
       const vrombop = "INSERT INTO history VALUES ($1, $2, $3, $4) RETURNING *";
       const zangzing = [auth_token, total_water_volume, total_uptime, date];
 
@@ -200,6 +214,8 @@ exports.update_device_record = async (req, res) => {
         payload: molarzing.rows,
       });
     }
+
+    // console.log("A record of this daten and token alreadt exist!");
 
     const new_query =
       "UPDATE history SET total_water_volume=$1, total_uptime=$2 WHERE auth_token=$3 AND date=$4 RETURNING *";
@@ -213,7 +229,7 @@ exports.update_device_record = async (req, res) => {
     const new_response = await pool.query(new_query, new_data);
 
     return res.status(200).json({
-      message: "A record of this daten and token alreadt exist!",
+      message: "A record of this daten and token already exist!",
       payload: new_response.rows,
     });
   } catch (error) {

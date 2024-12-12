@@ -6,7 +6,8 @@ import axios from "axios";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 // import blynk from "./models/blynk_conf";
-import { local_api_url } from "./query";
+import { local_api_url, blynk_get_api } from "./query";
+import { format } from "date-fns";
 
 function MainPage() {
   const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
@@ -24,18 +25,18 @@ function MainPage() {
   const [get_history, set_history] = useState([]);
   const [get_owned, set_owned] = useState([]);
 
-  const blynk_get_api = async (AUTH_TOKEN, PIN) => {
-    return axios
-      .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${PIN}`)
-      .then((response) => {
-        // console.log(`RECEIVED V${PIN}:`, response.data);
-        return response.data;
-      })
-      .catch((error) => {
-        console.error("Error: ", error);
-        throw error;
-      });
-  };
+  // const blynk_get_api = async (AUTH_TOKEN, PIN) => {
+  //   return axios
+  //     .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${PIN}`)
+  //     .then((response) => {
+  //       // console.log(`RECEIVED V${PIN}:`, response.data);
+  //       return response.data;
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error: ", error);
+  //       throw error;
+  //     });
+  // };
 
   const blynk_update_api = async (AUTH_TOKEN, PIN, VALUE) => {
     return axios
@@ -55,7 +56,35 @@ function MainPage() {
   useEffect(() => {
     /** ENABLE THIS LATER */
 
+    const PIN = {
+      v2: true, // MAX_ROTATION
+      v4: true, // MAX_UPTIME
+      v8: true, // MAX_WATER_VOLUME
+      v0: true, // ROTATION
+      v5: true, // UPTIME
+      v1: true, // WATER_VOLUME
+      v6: true, // TOTAL_WATER_VOLUME
+      v3: true, // TOTAL_UPTIME
+      v7: true, // DATE
+      // v10: true, // OVERRIDE_MODE
+    };
+
     const renew = setInterval(async () => {
+      blynk_get_api(AUTH_TOKEN, PIN)
+        .then((response) => {
+          set_max_rotation(response["v2"]);
+          set_max_uptime(response["v4"]);
+          set_max_water_volume(response["v8"]);
+          set_rotation(response["v0"]);
+          set_uptime(response["v5"]);
+          set_water_volume(response["v1"]);
+          set_total_water_volume(response["v6"]);
+          set_total_uptime(response["v3"]);
+          set_date(response["v7"]);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       // set_max_rotation(await blynk_get_api(AUTH_TOKEN, 2));
       // set_max_uptime(await blynk_get_api(AUTH_TOKEN, 4));
       // set_max_water_volume(await blynk_get_api(AUTH_TOKEN, 8));
@@ -65,7 +94,7 @@ function MainPage() {
       // set_total_uptime(await blynk_get_api(AUTH_TOKEN, 3));
       // set_date(await blynk_get_api(AUTH_TOKEN, 7));
       // set_override_mode(await blynk_get_api(AUTH_TOKEN, 10));
-    }, 1000);
+    }, 5000);
 
     const see_history = setInterval(() => {
       local_api_url("/get_all_record", {
@@ -102,7 +131,7 @@ function MainPage() {
 
   const fmt_date = (unfmt_date) => {
     const date = new Date(unfmt_date);
-    return date.toISOString().split("T")[0];
+    return format(date, "yyyy-MM-dd");
   };
 
   const dates = get_history.map((element) => fmt_date(element.date));

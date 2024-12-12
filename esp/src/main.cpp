@@ -24,6 +24,7 @@ TaskHandle_t xTaskMainHandle;
 TimerHandle_t xUptimeTimer;
 TimerHandle_t xWaterVolumeTimer;
 TimerHandle_t xTimeoutTimer;
+TimerHandle_t xBlynkVirtualWriteTimer;
 
 const char *ssid = "reset";
 const char *password = "HotspotCecep";
@@ -40,7 +41,7 @@ static int rotation_threshold = 10;
 static float water_volume_coeff = 0.12F;
 static float water_volume = 0.0F;
 static float total_water_volume = 0.0F;
-static float max_water_volume = 0.0F;
+static float max_water_volume = 10000.0F;
 
 static int water_volume_mode = 0;
 static int override_mode = 1;
@@ -152,6 +153,8 @@ void vTaskMain(void *pvParameters)
 
     sprintf(buff, "%ds / %do / %.2fmL     ", uptime, filtered_rotation, wvm_s);
 
+    Serial.println(buff);
+
     lcd.print(buff);
 
     lcd.setCursor(0, 2);
@@ -159,6 +162,8 @@ void vTaskMain(void *pvParameters)
     String in_cooldown = xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? "In cooldown...   " : "Ready!          ";
 
     lcd.print(in_cooldown);
+
+    Serial.println(in_cooldown);
 
     servo.write(filtered_rotation);
 
@@ -176,6 +181,10 @@ void vUptimeTimerCallback(TimerHandle_t xTimer)
   total_uptime += 1;
 
   xTimerReset(xTimer, 0);
+}
+
+void vBlynkVirtualWriteTimerCallback(TimerHandle_t xTimer)
+{
 }
 
 void vWaterVolumeTimerCallback(TimerHandle_t xTimer)
@@ -198,6 +207,8 @@ void setup_rtos()
   xUptimeTimer = xTimerCreate("Uptime Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vUptimeTimerCallback);
   xWaterVolumeTimer = xTimerCreate("Water Volume Timer", 100 / portTICK_PERIOD_MS, pdTRUE, (void *)1, vWaterVolumeTimerCallback);
   xTimeoutTimer = xTimerCreate("Timeout Timer", 5000 / portTICK_PERIOD_MS, pdTRUE, (void *)2, vTimeoutTimerCallback);
+  xBlynkVirtualWriteTimer = xTimerCreate("Blynk Virtual Write Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)3, vBlynkVirtualWriteTimerCallback);
+
   xTaskMain = xTaskCreate(vTaskMain, "Rotate Meter Task", 8192, NULL, 1, &xTaskMainHandle);
 
   vTaskDelete(NULL);

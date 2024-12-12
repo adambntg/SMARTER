@@ -30,9 +30,13 @@ export const deploy_api_url = async (path, params) => {
 
 export const blynk_get_api = async (AUTH_TOKEN, PIN) => {
   return axios
-    .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}&v${PIN}`)
+    .get(`https://blynk.cloud/external/api/get?token=${AUTH_TOKEN}`, {
+      params: {
+        ...PIN,
+      },
+    })
     .then((response) => {
-      // console.log(`RECEIVED V${PIN}:`, response.data);
+      console.log(`RECEIVED:`, response.data);
       return response.data;
     })
     .catch((error) => {
