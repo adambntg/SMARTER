@@ -9,7 +9,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={"/landing"} replace={true} />} />
+      <Route path="/" element={<Navigate to={"/login"} replace={true} />} />
 
       <Route path="/login" element={<LoginPage />} />
 

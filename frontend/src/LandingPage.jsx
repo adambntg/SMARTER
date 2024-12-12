@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -8,6 +8,9 @@ import Adam from "./assets/Adam.jpg";
 import Aqshal from "./assets/Aqshal.jpg";
 import Cecep from "./assets/Cecep.jpg";
 import { local_api_url } from "./query.js";
+import { Chart as ChartJS } from "chart.js/auto";
+import { Bar, Doughnut, Line } from "react-chartjs-2";
+import { format } from "date-fns";
 
 export default function LandingPage() {
   const vrombop = local_api_url("/login", {
@@ -15,8 +18,42 @@ export default function LandingPage() {
     password: "root",
   });
 
+  const AUTH_TOKEN = import.meta.env.VITE_AUTH_TOKEN;
+
+  const [get_history, set_history] = useState([]);
+
+  useEffect(() => {
+    const see_history = setInterval(() => {
+      local_api_url("/get_all_record", {
+        auth_token: AUTH_TOKEN,
+      })
+        .then((data) => {
+          console.log(data.payload);
+          set_history(data.payload);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      return () => {
+        clearInterval(see_history);
+      };
+    }, 1000);
+  }, []);
+
   console.log(vrombop);
   console.log("TEST");
+
+  const fmt_date = (unfmt_date) => {
+    const date = new Date(unfmt_date);
+    return format(date, "yyyy-MM-dd");
+  };
+
+  const dates = get_history.map((element) => fmt_date(element.date));
+  const total_uptimes = get_history.map((element) => element.total_uptime);
+  const total_water_volumes = get_history.map(
+    (element) => element.total_water_volume
+  );
 
   return (
     <>
@@ -131,7 +168,19 @@ export default function LandingPage() {
 
               <div className="w-full md:w-4/12 px-4 mr-auto ml-auto ">
                 <div className="relative flex flex-col min-w-0 break-words bg-black w-full mb-6 shadow-lg rounded-lg ">
-                  <img
+                  <Bar
+                    className="font-mono"
+                    data={{
+                      labels: dates,
+                      datasets: [
+                        {
+                          label: "Total Water Volume",
+                          data: total_water_volumes,
+                        },
+                      ],
+                    }}
+                  />
+                  {/* <img
                     alt="..."
                     //Ini nanti tempat buat naro chartnya//
                     src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80"
@@ -156,7 +205,7 @@ export default function LandingPage() {
                     <h4 className="text-xl font-bold text-white">
                       Total Water Volume
                     </h4>
-                  </blockquote>
+                  </blockquote> */}
                 </div>
               </div>
             </div>
