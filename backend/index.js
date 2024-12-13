@@ -30,4 +30,4 @@ app.listen(PORT, () => {
 });
 
 /** For deploymeny */
-// export default app;
+export default app;

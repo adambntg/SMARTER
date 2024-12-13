@@ -6,7 +6,7 @@ import axios from "axios";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 // import blynk from "./models/blynk_conf";
-import { local_api_url, blynk_get_api } from "./query";
+import { deploy_api_url, blynk_get_api } from "./query";
 import { format } from "date-fns";
 
 function MainPage() {
@@ -97,7 +97,7 @@ function MainPage() {
     }, 5000);
 
     const see_history = setInterval(() => {
-      local_api_url("/get_all_record", {
+      deploy_api_url("/get_all_record", {
         auth_token: AUTH_TOKEN,
       })
         .then((data) => {
@@ -110,7 +110,7 @@ function MainPage() {
     }, 1000);
 
     const test_ddown = setInterval(() => {
-      local_api_url("/owned", {
+      deploy_api_url("/owned", {
         owner: "nahl",
       })
         .then((data) => {
