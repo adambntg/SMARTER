@@ -26,8 +26,8 @@ TimerHandle_t xWaterVolumeTimer;
 TimerHandle_t xTimeoutTimer;
 TimerHandle_t xBlynkVirtualWriteTimer;
 
-const char *ssid = "reset";
-const char *password = "HotspotCecep";
+const char *ssid = "Wokwi-GUEST";
+const char *password = "";
 
 static int uptime = 0;
 static int total_uptime = 0;
@@ -119,12 +119,14 @@ void vTaskMain(void *pvParameters)
 
     analog_rotation = analogRead(34);
 
-    rotation = analog_rotation * 181 / 4096;
+    // rotation = analog_rotation * 181 / 4096;
+    rotation = map(analog_rotation, 0, 4095, 180, 0);
+    // rotation = rotation % 180;
 
     filtered_rotation = rotation <= max_rotation ? rotation : max_rotation;
     filtered_rotation *= xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? 0 : 1;
 
-    if (rotation > rotation_threshold)
+    if (180 - rotation > rotation_threshold)
     {
       if (xTimerIsTimerActive(xUptimeTimer) == pdFALSE)
       {
@@ -149,21 +151,26 @@ void vTaskMain(void *pvParameters)
       }
     }
 
-    lcd.setCursor(0, 1);
+    if (xTimerIsTimerActive(xTimeoutTimer) == pdFALSE)
+    {
+      lcd.setCursor(0, 1);
 
-    sprintf(buff, "%ds / %do / %.2fmL     ", uptime, filtered_rotation, wvm_s);
+      sprintf(buff, "%ds/%do/%.2fmL", uptime, 180 - filtered_rotation, wvm_s);
 
-    Serial.println(buff);
+      // Serial.println(buff);
 
-    lcd.print(buff);
+      lcd.print(buff);
+    }
+    else
+    {
+      lcd.setCursor(0, 1);
 
-    lcd.setCursor(0, 2);
+      String in_cooldown = "In cooldown...         ";
 
-    String in_cooldown = xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? "In cooldown...   " : "Ready!          ";
+      lcd.print(in_cooldown);
 
-    lcd.print(in_cooldown);
-
-    Serial.println(in_cooldown);
+      // Serial.println(in_cooldown);
+    }
 
     servo.write(filtered_rotation);
 
@@ -183,13 +190,9 @@ void vUptimeTimerCallback(TimerHandle_t xTimer)
   xTimerReset(xTimer, 0);
 }
 
-void vBlynkVirtualWriteTimerCallback(TimerHandle_t xTimer)
-{
-}
-
 void vWaterVolumeTimerCallback(TimerHandle_t xTimer)
 {
-  water_volume = filtered_rotation * water_volume_coeff;
+  water_volume = (180 - filtered_rotation) * water_volume_coeff;
   total_water_volume += water_volume;
 
   xTimerReset(xTimer, 0);
@@ -207,7 +210,6 @@ void setup_rtos()
   xUptimeTimer = xTimerCreate("Uptime Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)0, vUptimeTimerCallback);
   xWaterVolumeTimer = xTimerCreate("Water Volume Timer", 100 / portTICK_PERIOD_MS, pdTRUE, (void *)1, vWaterVolumeTimerCallback);
   xTimeoutTimer = xTimerCreate("Timeout Timer", 5000 / portTICK_PERIOD_MS, pdTRUE, (void *)2, vTimeoutTimerCallback);
-  xBlynkVirtualWriteTimer = xTimerCreate("Blynk Virtual Write Timer", 1000 / portTICK_PERIOD_MS, pdTRUE, (void *)3, vBlynkVirtualWriteTimerCallback);
 
   xTaskMain = xTaskCreate(vTaskMain, "Rotate Meter Task", 8192, NULL, 1, &xTaskMainHandle);
 
@@ -245,6 +247,12 @@ void setup()
   Serial.println("Configuring device...");
 
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
+
+  pinMode(18, OUTPUT);
+  pinMode(19, OUTPUT);
+
+  digitalWrite(18, LOW);
+  digitalWrite(19, HIGH);
 
   // reset_virtual_pins();
   synch_virtual_pins();

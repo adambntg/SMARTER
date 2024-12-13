@@ -25,5 +25,5 @@ void setup_lcd()
     lcd.init();
     lcd.backlight();
     lcd.setCursor(0, 0);
-    lcd.print("Uptime / Rotation / Volume:");
+    lcd.print("UP/RTN/VOL");
 }
