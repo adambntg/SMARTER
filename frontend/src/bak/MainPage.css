@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* MainPage.css */
 html,
 body {
@@ -10,7 +14,7 @@ body {
     #007bff
   ); /* Latar belakang hijau-biru */
   color: white;
-  font-family: "Segoe UI";
+  /* font-family: "Segoe UI"; */
 }
 
 /* Main Container */

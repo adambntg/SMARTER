@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const device_route = require("./routes/device_route");
-const date_test = require("./models/date_conf");
-const made_in_heaven = require("./models/made_in_heaven");
+const rt = require("./models/rt_conf");
 const controller = require("./controllers/device_controller");
 const dotenv = require("dotenv").config();
 
@@ -19,9 +18,8 @@ app.use(
 );
 // app.use(express.static(path.join(__dirname, "../frontend"))); // Menyajikan file statis dari folder frontend
 
-// setInterval(date_test.date_determine, 1000);
-// setInterval(made_in_heaven.rt_update_record, 100);
-// setInterval(made_in_heaven.rt_get_record, 1000);
+/** PLEASE ENABLE THIS LATER */
+rt.rt_synch();
 
 app.use("/smarter", device_route);
 

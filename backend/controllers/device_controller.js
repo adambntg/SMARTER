@@ -118,6 +118,31 @@ exports.get_owned_device = async (req, res) => {
   }
 };
 
+exports.get_all_device_record = async (req, res) => {
+  const { auth_token } = req.query;
+
+  try {
+    const query =
+      "SELECT date, total_water_volume, total_uptime FROM history WHERE auth_token=$1";
+    const data = [auth_token];
+
+    const response = await pool.query(query, data);
+
+    return res.status(201).json({
+      message: `Receive all date from auth token ${auth_token}`,
+      payload: response.rows,
+      count: response.rowCount,
+      // date: response.rows[0].date.toISOString().split("T")[0],
+      // total_uptime: response.rows[0].total_uptime,
+      // total_water_volume: response.rows[0].total_water_volume,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 exports.get_device_record = async (req, res) => {
   const { auth_token } = req.query;
   const date = new Date();
@@ -132,9 +157,10 @@ exports.get_device_record = async (req, res) => {
 
     return res.status(201).json({
       message: "Yes sir!",
-      total_water_volume: response.rows[0].total_water_volume,
-      total_uptime: response.rows[0].total_uptime,
       payload: response.rows,
+      // total_water_volume: response.rows[0].total_water_volume,
+      // total_uptime: response.rows[0].total_uptime,
+      // payload: response.rows,
     });
   } catch (error) {
     return res.status(500).json({
@@ -165,20 +191,26 @@ exports.update_device_record = async (req, res) => {
       const molarzing = await pool.query(vrombop, zangzing);
 
       return res.status(200).json({
-        message: "Vrombop baru vrom vrom!",
+        message: "New entry submitted!",
         payload: molarzing.rows,
       });
     }
 
     const new_query =
       "UPDATE history SET total_water_volume=$1, total_uptime=$2 WHERE auth_token=$3 AND date=$4 RETURNING *";
-    const new_data = [total_water_volume, total_uptime, auth_token, date];
+    const new_data = [
+      total_water_volume,
+      total_uptime,
+      auth_token,
+      format_date,
+    ];
 
     const new_response = await pool.query(new_query, new_data);
 
-    return res
-      .status(200)
-      .json({ message: "Exist!", payload: new_response.rows });
+    return res.status(200).json({
+      message: "A record of this daten and token alreadt exist!",
+      payload: new_response.rows,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

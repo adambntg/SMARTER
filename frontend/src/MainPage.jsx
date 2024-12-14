@@ -7,7 +7,7 @@ import axios from "axios";
 // import blynk from "./models/blynk_conf";
 
 function MainPage() {
-  const AUTH_TOKEN = "iccuJhsXcjRIX20sFM75onKmGgwY_R_P";
+  const AUTH_TOKEN = "oSFwsDBdiJmJluY-ZOM9HajmQaActNDj";
   const [get_max_uptime, set_max_uptime] = useState(0);
   const [get_uptime, set_uptime] = useState(0);
   const [get_rotation, set_rotation] = useState(0);
@@ -15,6 +15,9 @@ function MainPage() {
   const [get_total_water_volume, set_total_water_volume] = useState(0.0);
   const [get_max_rotation, set_max_rotation] = useState(0);
   const [get_max_water_volume, set_max_water_volume] = useState(0);
+  const [get_date, set_date] = useState("");
+
+  const [get_history, set_history] = useState([]);
 
   const blynk_get_api = async (AUTH_TOKEN, PIN) => {
     return axios
@@ -44,7 +47,16 @@ function MainPage() {
       });
   };
 
+  const fetchedData = [
+    { date: "2024-12-07T17:00:00.000Z", total_water_volume: 0, total_up: 0 },
+    { date: "2024-12-06T17:00:00.000Z", total_water_volume: 0, total_up: 0 },
+    { date: "2024-12-05T17:00:00.000Z", total_water_volume: 0, total_up: 0 },
+  ];
+
   useEffect(() => {
+    set_history(fetchedData);
+    /** ENABLE THIS LATER */
+
     const renew = setInterval(async () => {
       set_max_rotation(await blynk_get_api(AUTH_TOKEN, 2));
       set_max_uptime(await blynk_get_api(AUTH_TOKEN, 4));
@@ -53,15 +65,33 @@ function MainPage() {
       set_uptime(await blynk_get_api(AUTH_TOKEN, 5));
       set_total_water_volume(await blynk_get_api(AUTH_TOKEN, 6));
       set_total_uptime(await blynk_get_api(AUTH_TOKEN, 3));
+      set_date(await blynk_get_api(AUTH_TOKEN, 7));
     }, 1000);
 
+    // const see_history = setInterval(async () => {
+    //   await axios
+    //     .get("http://localhost:5000/smarter/get_all_record", {
+    //       params: {
+    //         auth_token: AUTH_TOKEN,
+    //       },
+    //     })
+    //     .then((response) => {
+    //       console.log(response.data.payload);
+    //       set_history(response.data.payload);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // }, 1000);
+
     return () => {
+      // clearInterval(see_history);
       clearInterval(renew);
     };
   }, []);
 
   return (
-    <div className="main-container font-sans">
+    <div className="main-container font-mono">
       <div className="dashboard-card">
         {/* Logo */}
         <div className="logo-container">
@@ -151,7 +181,7 @@ function MainPage() {
             <input
               type="range"
               min="0"
-              max="1000000"
+              max="100000"
               value={get_max_water_volume}
               onChange={async (e) => {
                 set_max_water_volume(e.target.value);
@@ -159,7 +189,12 @@ function MainPage() {
               }}
               className="slider"
             />
-            <p>{get_max_water_volume}L</p>
+            <p>{get_max_water_volume}mL</p>
+          </div>
+
+          <div className="card card-slider">
+            <h3 className="card-title">Date</h3>
+            <p>{get_date}</p>
           </div>
         </div>
 
@@ -174,14 +209,22 @@ function MainPage() {
         </div> */}
 
         {/* Date Picker */}
-        <div className="date-picker-container">
+        {/* <div className="date-picker-container">
           <input type="date" className="date-picker" />
-        </div>
+        </div> */}
 
         {/* Chart Section */}
         <div className="chart-container">
           <p className="chart-title">Usage Trends</p>
+          <p>{get_history.length}</p>
           {/* Chart content here */}
+          <ul>
+            {get_history.map((item, index) => {
+              <li>
+                <p>pro</p>;
+              </li>;
+            })}
+          </ul>
         </div>
       </div>
     </div>

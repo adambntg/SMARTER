@@ -35,6 +35,6 @@ void setup_lcd()
     lcd.init();
     lcd.backlight();
     lcd.setCursor(0, 0);
-    lcd.print("Uptime / Rotation:");
+    lcd.print("Uptime / Rotation / Volume:");
     lcd.createChar(0, degreeSymbol);
 }

@@ -106,8 +106,10 @@ void vTaskRotateMeter(void *pvParameters)
 
   while (1)
   {
-    float wvm = water_volume_mode ? total_water_volume : water_volume;
-    if (uptime > max_uptime || wvm > max_water_volume)
+    // float wvm = water_volume_mode ? total_water_volume : water_volume;
+    // float wvm = water_volume;
+    float wvm_s = water_volume * 10;
+    if (uptime > max_uptime || wvm_s > max_water_volume)
     {
       xTimerStart(xTimeoutTimer, 0);
     }
@@ -147,13 +149,13 @@ void vTaskRotateMeter(void *pvParameters)
 
     lcd.setCursor(0, 1);
 
-    sprintf(buff, "%ds / %ddeg   ", uptime, filtered_rotation);
+    sprintf(buff, "%ds / %do / %.2fmL     ", uptime, filtered_rotation, wvm_s);
 
     lcd.print(buff);
 
     lcd.setCursor(0, 2);
 
-    String in_cooldown = xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? "In cooldown...   " : "Zang zing ready!";
+    String in_cooldown = xTimerIsTimerActive(xTimeoutTimer) == pdTRUE ? "In cooldown...   " : "Ready!          ";
 
     lcd.print(in_cooldown);
 
@@ -163,6 +165,7 @@ void vTaskRotateMeter(void *pvParameters)
     Blynk.virtualWrite(UPTIME_VPIN, uptime);
     Blynk.virtualWrite(TOTAL_UPTIME_VPIN, total_uptime);
     Blynk.virtualWrite(TOTAL_WATER_VOLUME_VPIN, total_water_volume);
+    Blynk.virtualWrite(WATER_VOLUME_VPIN, wvm_s);
   }
 }
 

@@ -8,7 +8,7 @@ exports.blynk_get_api = async (AUTH_TOKEN, PIN) => {
       return response.data;
     })
     .catch((error) => {
-      console.error("Error: ", error);
+      // console.error("Error: ", error);
       throw error;
     });
 };
@@ -23,7 +23,24 @@ exports.blynk_update_api = async (AUTH_TOKEN, PIN, VALUE) => {
       return VALUE;
     })
     .catch((error) => {
-      console.error("Error: ", error);
+      // console.error("Error: ", error);
+      throw error;
+    });
+};
+
+exports.blynk_batch_upate_api = async (AUTH_TOKEN, PARAMS) => {
+  return axios
+    .get(`http://blynk.cloud/external/api/batch/update?token=${AUTH_TOKEN}`, {
+      params: {
+        ...PARAMS,
+      },
+    })
+    .then((response) => {
+      // console.log("Sent: ", response.data);
+      return PARAMS;
+    })
+    .catch((error) => {
+      // console.error("Error: ", error);
       throw error;
     });
 };
